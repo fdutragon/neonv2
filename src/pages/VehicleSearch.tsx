@@ -105,7 +105,7 @@ export default function VehicleSearch() {
             Buscar Veículos
           </h1>
           <p className="text-lg text-gray-600">
-            Encontre o veículo premium perfeito para você
+            Encontre o veículo Perfeito para você
           </p>
         </div>
 

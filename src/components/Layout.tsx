@@ -114,7 +114,7 @@ export default function Layout() {
                 <span className="text-xl font-bold">Neon Multimarcas</span>
               </div>
               <p className="text-gray-400 text-sm">
-                Sua concessionária premium de veículos. Qualidade, confiança e excelência em cada veículo.
+                Sua concessionária Perfeito de veículos. Qualidade, confiança e excelência em cada veículo.
               </p>
             </div>
 
@@ -144,15 +144,16 @@ export default function Layout() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Contato</h3>
               <div className="space-y-2 text-sm text-gray-400">
-                <p>📍 Av. Principal, 1234 - Centro</p>
+                <p>📍 Rua das Flores, 123 - Centro</p>
+                <p>📍 Cotia - SP, 06700-000</p>
                 <p>📞 (11) 1234-5678</p>
-                <p>✉️ contato@premiummotors.com</p>
+                <p>✉️ contato@neonmultimarcas.com</p>
               </div>
             </div>
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 Premium Motors. Todos os direitos reservados.</p>
+            <p>&copy; 2024 Neon Multimarcas. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

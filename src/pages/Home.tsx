@@ -86,10 +86,10 @@ export default function Home() {
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Encontre Seu Veículo
-              <span className="block text-yellow-400">Premium</span>
+              <span className="block text-yellow-400">Perfeito</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-300 max-w-3xl mx-auto">
-              A maior seleção de veículos premium com a qualidade e confiança que você merece.
+              A maior seleção de veículos Perfeito com a qualidade e confiança que você merece.
               Concessionária especializada em carros de alto padrão.
             </p>
             {/* Quick Model Autosuggest */}
@@ -152,7 +152,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Por Que Escolher a Premium Motors?
+              Por Que Escolher a Neon Multimarcas?
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Compromisso com excelência e satisfação total do cliente
@@ -164,7 +164,7 @@ export default function Home() {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-900 text-white rounded-full mb-4">
                 <Award className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Qualidade Premium</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Qualidade Perfeito</h3>
               <p className="text-gray-600">
                 Veículos selecionados com rigorosos padrões de qualidade e procedência garantida.
               </p>
