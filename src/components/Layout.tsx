@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, MessageCircle } from 'lucide-react'
 import { useState } from 'react'
 
 export default function Layout() {
@@ -11,7 +11,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b">
+      <nav className="bg-yellow-400 shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -44,8 +44,7 @@ export default function Layout() {
             </div>
 
             {/* Admin Login Button */}
-            <Link
-              to="/admin/login"
+            <Link to="/admin/login"
               className="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 transition-colors"
             >
               Admin
@@ -144,10 +143,10 @@ export default function Layout() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Contato</h3>
               <div className="space-y-2 text-sm text-gray-400">
-                <p>📍 Rua das Flores, 123 - Centro</p>
-                <p>📍 Cotia - SP, 06700-000</p>
-                <p>📞 (11) 1234-5678</p>
+                <p>📍 Jorge Caixe, 323 - Jardim Nomura - Cotia/SP</p>
+                <p>📞 11 94261-8407</p>
                 <p>✉️ contato@neonmultimarcas.com</p>
+                <p>📷 Instagram: @neon_multimarcas</p>
               </div>
             </div>
           </div>
@@ -160,3 +159,13 @@ export default function Layout() {
     </div>
   )
 }
+      <a
+        href="https://wa.me/5511942618407"
+        className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 px-4 py-3 bg-green-500 text-white font-semibold rounded-full shadow-lg hover:bg-green-600"
+        aria-label="WhatsApp"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <MessageCircle className="h-5 w-5" />
+        11 94261-8407
+      </a>

@@ -229,16 +229,30 @@ export default function VehicleSearch() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Combustível</label>
-                <select
-                  value={filters.fuel_type}
-                  onChange={(e) => handleFilterChange('fuel_type', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                >
-                  <option value="">Todos os Combustíveis</option>
+                <div className="flex flex-wrap gap-2">
+                  <label className="inline-flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="radio"
+                      name="fuel_type"
+                      value=""
+                      checked={filters.fuel_type === ''}
+                      onChange={(e) => handleFilterChange('fuel_type', e.target.value)}
+                    />
+                    <span className="text-sm">Todos</span>
+                  </label>
                   {fuelTypes.map(type => (
-                    <option key={type.value} value={type.value}>{type.label}</option>
+                    <label key={type.value} className="inline-flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                      <input
+                        type="radio"
+                        name="fuel_type"
+                        value={type.value}
+                        checked={filters.fuel_type === type.value}
+                        onChange={(e) => handleFilterChange('fuel_type', e.target.value)}
+                      />
+                      <span className="text-sm">{type.label}</span>
+                    </label>
                   ))}
-                </select>
+                </div>
               </div>
 
               <div>
@@ -304,8 +318,8 @@ export default function VehicleSearch() {
                       
                       <div className="space-y-1 mb-4 text-sm text-gray-600">
                         <p>Quilometragem: {vehicle.mileage.toLocaleString('pt-BR')} km</p>
-                        <p>Combustível: {vehicle.fuel_type}</p>
-                        <p>Categoria: {vehicle.category}</p>
+                        <p>Combustível: {fuelLabel[vehicle.fuel_type] || vehicle.fuel_type}</p>
+                        <p>Categoria: {categoryLabel[vehicle.category] || vehicle.category}</p>
                       </div>
                       
                       <div className="flex items-center justify-between">
@@ -355,11 +369,11 @@ export default function VehicleSearch() {
                           </div>
                           <div>
                             <span className="font-medium">Combustível:</span>
-                            <p>{vehicle.fuel_type}</p>
+                            <p>{fuelLabel[vehicle.fuel_type] || vehicle.fuel_type}</p>
                           </div>
                           <div>
                             <span className="font-medium">Categoria:</span>
-                            <p>{vehicle.category}</p>
+                            <p>{categoryLabel[vehicle.category] || vehicle.category}</p>
                           </div>
                           <div>
                             <span className="font-medium">Preço:</span>
@@ -401,3 +415,20 @@ export default function VehicleSearch() {
     </div>
   )
 }
+  const fuelLabel: Record<string, string> = {
+    gasoline: 'Gasolina',
+    diesel: 'Diesel',
+    electric: 'Elétrico',
+    hybrid: 'Híbrido'
+  }
+
+  const categoryLabel: Record<string, string> = {
+    sedan: 'Sedan',
+    suv: 'SUV',
+    hatchback: 'Hatchback',
+    pickup: 'Pick-up',
+    coupe: 'Cupê',
+    convertible: 'Conversível',
+    wagon: 'Wagon',
+    utility: 'Utilitários'
+  }

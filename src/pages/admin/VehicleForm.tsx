@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase, VehicleImage, Specifications } from '@/lib/supabase'
+import { groqChatCompletion } from '@/lib/groq'
+import type { GroqMessage } from '@/lib/groq'
 import { Upload, X } from 'lucide-react'
 
 export default function VehicleForm() {
@@ -26,6 +28,7 @@ export default function VehicleForm() {
   const [images, setImages] = useState<File[]>([])
   const [existingImages, setExistingImages] = useState<VehicleImage[]>([])
   const [uploading, setUploading] = useState(false)
+  const [generating, setGenerating] = useState(false)
 
   // Fuel types and categories from the technical architecture
   const fuelTypes = [
@@ -42,7 +45,8 @@ export default function VehicleForm() {
     { value: 'pickup', label: 'Pick-up' },
     { value: 'coupe', label: 'Cupê' },
     { value: 'convertible', label: 'Conversível' },
-    { value: 'wagon', label: 'Wagon' }
+    { value: 'wagon', label: 'Wagon' },
+    { value: 'utility', label: 'Utilitários' }
   ]
 
   // Common specification fields
@@ -53,12 +57,8 @@ export default function VehicleForm() {
     { key: 'acceleration', label: 'Aceleração', placeholder: '0-100 km/h em 6.5s' },
     { key: 'top_speed', label: 'Velocidade Máxima', placeholder: '240 km/h' },
     { key: 'consumption', label: 'Consumo', placeholder: '12 km/l cidade' },
-    { key: 'transmission', label: 'Câmbio', placeholder: 'Automático 8 velocidades' },
-    { key: 'traction', label: 'Tração', placeholder: 'Integral' },
-    { key: 'doors', label: 'Portas', placeholder: '4' },
-    { key: 'seats', label: 'Lugares', placeholder: '5' },
-    { key: 'trunk', label: 'Porta-malas', placeholder: '480 L' },
-    { key: 'weight', label: 'Peso', placeholder: '1.580 kg' }
+    { key: 'transmission', label: 'Câmbio', placeholder: '' },
+    { key: 'traction', label: 'Tração', placeholder: 'Integral' }
   ]
 
   useEffect(() => {
@@ -129,6 +129,33 @@ export default function VehicleForm() {
         [key]: value
       }
     }))
+  }
+
+  const generateDescription = async () => {
+    setGenerating(true)
+    try {
+      const specs = formData.specifications as Specifications
+      const messages: GroqMessage[] = [
+        {
+          role: 'system',
+          content:
+            'Você é um redator automotivo brasileiro. Gere uma descrição comercial concisa (120–180 palavras), clara e atrativa em pt-BR. Evite superlativos excessivos, foque em benefícios e destaque itens relevantes. Inclua pontos sobre desempenho, conforto, tecnologia e segurança quando aplicável.',
+        },
+        {
+          role: 'user',
+          content: `Crie uma descrição para: \nMarca: ${formData.brand}\nModelo: ${formData.model}\nAno: ${formData.year}\nPreço: R$ ${formData.price}\nQuilometragem: ${formData.mileage} km\nCombustível: ${formData.fuel_type}\nCategoria: ${formData.category}\nEspecificações: ${JSON.stringify(specs)}\nContexto: loja Neon Multimarcas, estilo premium Perfeito, linguagem objetiva e confiável. Evite repetir números sem necessidade; use frases naturais.`,
+        },
+      ]
+      const text = await groqChatCompletion(messages)
+      if (text) {
+        setFormData(prev => ({ ...prev, description: text }))
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      alert(`Falha ao gerar descrição: ${msg}`)
+    } finally {
+      setGenerating(false)
+    }
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -353,21 +380,21 @@ export default function VehicleForm() {
               </div>
 
               <div>
-                <label htmlFor="fuel_type" className="block text-sm font-medium text-gray-700 mb-2">
-                  Combustível *
-                </label>
-                <select
-                  id="fuel_type"
-                  name="fuel_type"
-                  required
-                  value={formData.fuel_type}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">Combustível *</label>
+                <div className="flex flex-wrap gap-3">
                   {fuelTypes.map(type => (
-                    <option key={type.value} value={type.value}>{type.label}</option>
+                    <label key={type.value} className="inline-flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                      <input
+                        type="radio"
+                        name="fuel_type"
+                        value={type.value}
+                        checked={formData.fuel_type === type.value}
+                        onChange={handleInputChange}
+                      />
+                      <span className="text-sm">{type.label}</span>
+                    </label>
                   ))}
-                </select>
+                </div>
               </div>
 
               <div>
@@ -426,6 +453,16 @@ export default function VehicleForm() {
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
               Descrição
             </label>
+            <div className="flex gap-3 mb-3">
+              <button
+                type="button"
+                onClick={generateDescription}
+                disabled={generating}
+                className="px-4 py-2 bg-yellow-400 text-gray-900 font-medium rounded-lg hover:bg-yellow-300 disabled:opacity-50"
+              >
+                {generating ? 'Gerando...' : 'Gerar automaticamente'}
+              </button>
+            </div>
             <textarea
               id="description"
               name="description"
@@ -446,14 +483,28 @@ export default function VehicleForm() {
                   <label htmlFor={`spec_${field.key}`} className="block text-sm font-medium text-gray-700 mb-2">
                     {field.label}
                   </label>
-                  <input
-                    type="text"
-                    id={`spec_${field.key}`}
-                    value={(formData.specifications as Specifications)[field.key] || ''}
-                    onChange={(e) => handleSpecificationChange(field.key, e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                    placeholder={field.placeholder}
-                  />
+                  {field.key === 'transmission' ? (
+                    <select
+                      id={`spec_${field.key}`}
+                      value={(formData.specifications as Specifications)[field.key] || ''}
+                      onChange={(e) => handleSpecificationChange(field.key, e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
+                    >
+                      <option value="">Selecione</option>
+                      <option value="Automático">Automático</option>
+                      <option value="Manual">Manual</option>
+                      <option value="Semi-automático">Semi-automático</option>
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      id={`spec_${field.key}`}
+                      value={(formData.specifications as Specifications)[field.key] || ''}
+                      onChange={(e) => handleSpecificationChange(field.key, e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
+                      placeholder={field.placeholder}
+                    />
+                  )}
                 </div>
               ))}
             </div>

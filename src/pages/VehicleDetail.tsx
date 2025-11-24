@@ -343,7 +343,8 @@ export default function VehicleDetail() {
     pickup: 'Pick-up',
     coupe: 'Cupê',
     convertible: 'Conversível',
-    wagon: 'Wagon'
+    wagon: 'Wagon',
+    utility: 'Utilitários'
   }
 
   const specLabel: Record<string, string> = {
@@ -355,9 +356,5 @@ export default function VehicleDetail() {
     consumption: 'Consumo',
     transmission: 'Câmbio',
     traction: 'Tração',
-    drivetrain: 'Tração',
-    doors: 'Portas',
-    seats: 'Lugares',
-    trunk: 'Porta-malas',
-    weight: 'Peso'
+    drivetrain: 'Tração'
   }

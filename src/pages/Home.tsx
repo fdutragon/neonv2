@@ -74,7 +74,8 @@ export default function Home() {
     pickup: 'Pick-up',
     coupe: 'Cupê',
     convertible: 'Conversível',
-    wagon: 'Wagon'
+    wagon: 'Wagon',
+    utility: 'Utilitários'
   }
 
   return (

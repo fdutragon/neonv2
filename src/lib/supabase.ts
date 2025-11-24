@@ -35,6 +35,7 @@ export interface Vehicle {
   mileage: number
   fuel_type: 'gasoline' | 'diesel' | 'electric' | 'hybrid'
   category: 'sedan' | 'suv' | 'hatchback' | 'pickup' | 'coupe' | 'convertible' | 'wagon'
+  | 'utility'
   featured: boolean
   featured_order: number
   specifications: Specifications
