@@ -36,8 +36,16 @@ export default function Home() {
 
         if (error) throw error
 
+        let unique: string[]
         const modelsData = (data as { model: string }[] | null) ?? []
-        const unique = Array.from(new Set(modelsData.map((v) => v.model))).filter(Boolean)
+        if (modelsData.length > 0) {
+          unique = Array.from(new Set(modelsData.map((v) => v.model))).filter(Boolean)
+        } else {
+          // Fallback to external API using brands top list
+          const resp = await fetch('https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/BMW?format=json')
+          const json = await resp.json()
+          unique = (json?.Results || []).map((r: any) => r.Model_Name).filter(Boolean)
+        }
         setModels(unique)
         setFilteredModels(unique)
       } catch (e) {
@@ -57,8 +65,17 @@ export default function Home() {
 
         if (error) throw error
 
+        let unique: string[]
         const brandsData = (data as { brand: string }[] | null) ?? []
-        const unique = Array.from(new Set(brandsData.map((v) => v.brand))).filter(Boolean)
+        if (brandsData.length > 0) {
+          unique = Array.from(new Set(brandsData.map((v) => v.brand))).filter(Boolean)
+        } else {
+          const resp = await fetch('https://vpic.nhtsa.dot.gov/api/vehicles/getallmakes?format=json')
+          const json = await resp.json()
+          const makes: string[] = (json?.Results || []).map((r: any) => r.Make_Name).filter(Boolean)
+          const top = ['Audi','BMW','Mercedes-Benz','Porsche','Jaguar','Land Rover','Volvo']
+          unique = Array.from(new Set([...top, ...makes])).slice(0, 50)
+        }
         setBrands(unique)
         setFilteredBrands(unique)
       } catch (e) {

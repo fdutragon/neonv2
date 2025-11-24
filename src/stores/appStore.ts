@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
 import { Vehicle, VehicleWithImages, ContactInterest } from '../lib/supabase'
+import { generateSampleVehicles, generateFeaturedVehicles } from '@/lib/externalVehicles'
 
 export type VehicleFilters = {
   brand?: string
@@ -90,7 +91,30 @@ export const useAppStore = create<AppState>((set) => ({
 
       if (error) throw error
 
-      set({ vehicles: data || [], loading: false })
+      if (data && data.length > 0) {
+        set({ vehicles: data, loading: false })
+      } else {
+        const external = await generateSampleVehicles({ brand: filters.brand, model: filters.model }, filters.limit || 12)
+        // map to Vehicle shape
+        const mapped: Vehicle[] = external.map(v => ({
+          id: v.id,
+          brand: v.brand,
+          model: v.model,
+          year: v.year,
+          price: v.price,
+          mileage: v.mileage,
+          fuel_type: v.fuel_type,
+          category: v.category,
+          featured: v.featured,
+          featured_order: v.featured_order,
+          specifications: v.specifications,
+          description: v.description,
+          created_by: v.created_by,
+          created_at: v.created_at,
+          updated_at: v.updated_at,
+        }))
+        set({ vehicles: mapped, loading: false })
+      }
     } catch (error) {
       console.error('Error fetching vehicles:', error)
       set({ error: 'Erro ao carregar veículos', loading: false })
@@ -109,23 +133,45 @@ export const useAppStore = create<AppState>((set) => ({
 
       if (error) throw error
 
-      // Fetch images for featured vehicles
-      const featuredVehiclesWithImages = await Promise.all(
-        (vehicles || []).map(async (vehicle) => {
-          const { data: images } = await supabase
-            .from('vehicle_images')
-            .select('*')
-            .eq('vehicle_id', vehicle.id)
-            .order('order_index', { ascending: true })
+      if (vehicles && vehicles.length > 0) {
+        // Fetch images for featured vehicles
+        const featuredVehiclesWithImages = await Promise.all(
+          (vehicles || []).map(async (vehicle) => {
+            const { data: images } = await supabase
+              .from('vehicle_images')
+              .select('*')
+              .eq('vehicle_id', vehicle.id)
+              .order('order_index', { ascending: true })
 
-          return {
-            ...vehicle,
-            images: images || []
-          }
-        })
-      )
-
-      set({ featuredVehicles: featuredVehiclesWithImages, loading: false })
+            return {
+              ...vehicle,
+              images: images || []
+            }
+          })
+        )
+        set({ featuredVehicles: featuredVehiclesWithImages, loading: false })
+      } else {
+        const external = await generateFeaturedVehicles(6)
+        const mapped: VehicleWithImages[] = external.map(v => ({
+          id: v.id,
+          brand: v.brand,
+          model: v.model,
+          year: v.year,
+          price: v.price,
+          mileage: v.mileage,
+          fuel_type: v.fuel_type,
+          category: v.category,
+          featured: v.featured,
+          featured_order: v.featured_order,
+          specifications: v.specifications,
+          description: v.description,
+          created_by: v.created_by,
+          created_at: v.created_at,
+          updated_at: v.updated_at,
+          images: (v.images || [])
+        }))
+        set({ featuredVehicles: mapped, loading: false })
+      }
     } catch (error) {
       console.error('Error fetching featured vehicles:', error)
       set({ error: 'Erro ao carregar veículos em destaque', loading: false })
