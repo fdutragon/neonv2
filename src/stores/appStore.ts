@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
 import { Vehicle, VehicleWithImages, ContactInterest } from '../lib/supabase'
 
-type VehicleFilters = {
+export type VehicleFilters = {
   brand?: string
   model?: string
   year_min?: number
@@ -17,7 +17,7 @@ type VehicleFilters = {
   limit?: number
 }
 
-type ContactInterestInsert = Omit<ContactInterest, 'id' | 'created_at'>
+export type ContactInterestInsert = Omit<ContactInterest, 'id' | 'created_at'>
 
 interface AppState {
   // Authentication

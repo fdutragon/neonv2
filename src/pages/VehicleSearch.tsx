@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import type { VehicleFilters } from '@/stores/appStore'
 import { useAppStore } from '@/stores/appStore'
 import { Car, Filter, Grid, List, Search as SearchIcon } from 'lucide-react'
 
@@ -38,7 +39,18 @@ export default function VehicleSearch() {
   ]
 
   useEffect(() => {
-    fetchVehicles(filters)
+    const applied: VehicleFilters = {
+      brand: filters.brand || undefined,
+      model: filters.model || undefined,
+      year_min: filters.year_min ? Number(filters.year_min) : undefined,
+      year_max: filters.year_max ? Number(filters.year_max) : undefined,
+      price_min: filters.price_min ? Number(filters.price_min) : undefined,
+      price_max: filters.price_max ? Number(filters.price_max) : undefined,
+      fuel_type: filters.fuel_type ? (filters.fuel_type as VehicleFilters['fuel_type']) : undefined,
+      category: filters.category ? (filters.category as VehicleFilters['category']) : undefined,
+      sort_by: filters.sort_by as VehicleFilters['sort_by'],
+    }
+    fetchVehicles(applied)
   }, [filters])
 
   useEffect(() => {
