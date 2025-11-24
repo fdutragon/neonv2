@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
-import { Vehicle, VehicleImage } from '@/lib/supabase'
+import { Vehicle } from '@/lib/supabase'
 import { Car, Edit, Trash2, Star, Plus, Search, Filter, Eye } from 'lucide-react'
 
 export default function AdminVehicles() {
@@ -144,7 +144,7 @@ export default function AdminVehicles() {
             <Filter className="h-5 w-5 text-gray-400" />
             <select
               value={filterFeatured}
-              onChange={(e) => setFilterFeatured(e.target.value as any)}
+              onChange={(e) => setFilterFeatured(e.target.value as 'all' | 'featured' | 'not-featured')}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
             >
               <option value="all">Todos</option>

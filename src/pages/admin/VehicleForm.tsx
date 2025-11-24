@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { supabase, Vehicle } from '@/lib/supabase'
-import { Car, Upload, X, Plus, Trash2 } from 'lucide-react'
+import { supabase, VehicleImage, Specifications } from '@/lib/supabase'
+import { Upload, X } from 'lucide-react'
 
 export default function VehicleForm() {
   const { id } = useParams<{ id: string }>()
@@ -24,7 +24,7 @@ export default function VehicleForm() {
   })
   
   const [images, setImages] = useState<File[]>([])
-  const [existingImages, setExistingImages] = useState<any[]>([])
+  const [existingImages, setExistingImages] = useState<VehicleImage[]>([])
   const [uploading, setUploading] = useState(false)
 
   // Fuel types and categories from the technical architecture
@@ -168,7 +168,7 @@ export default function VehicleForm() {
         const fileName = `${vehicleId}/${Date.now()}-${file.name}`
         
         // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('vehicle-images')
           .upload(fileName, file)
 
@@ -449,7 +449,7 @@ export default function VehicleForm() {
                   <input
                     type="text"
                     id={`spec_${field.key}`}
-                    value={(formData.specifications as any)[field.key] || ''}
+                    value={(formData.specifications as Specifications)[field.key] || ''}
                     onChange={(e) => handleSpecificationChange(field.key, e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
                     placeholder={field.placeholder}

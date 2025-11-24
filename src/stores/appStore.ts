@@ -1,11 +1,28 @@
 import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
-import { Vehicle, VehicleWithImages } from '../lib/supabase'
+import { Vehicle, VehicleWithImages, ContactInterest } from '../lib/supabase'
+
+type VehicleFilters = {
+  brand?: string
+  model?: string
+  year_min?: number
+  year_max?: number
+  price_min?: number
+  price_max?: number
+  fuel_type?: Vehicle['fuel_type']
+  category?: Vehicle['category']
+  featured?: boolean
+  sort_by?: 'price_asc' | 'price_desc' | 'year_asc' | 'year_desc' | 'created_at_desc'
+  page?: number
+  limit?: number
+}
+
+type ContactInterestInsert = Omit<ContactInterest, 'id' | 'created_at'>
 
 interface AppState {
   // Authentication
   isAuthenticated: boolean
-  user: any | null
+  user: unknown | null
   
   // Vehicles
   vehicles: Vehicle[]
@@ -15,16 +32,16 @@ interface AppState {
   error: string | null
   
   // Actions
-  setAuth: (authenticated: boolean, user: any | null) => void
-  fetchVehicles: (filters?: any) => Promise<void>
+  setAuth: (authenticated: boolean, user: unknown | null) => void
+  fetchVehicles: (filters?: VehicleFilters) => Promise<void>
   fetchFeaturedVehicles: () => Promise<void>
   fetchVehicleById: (id: string) => Promise<void>
-  submitContactInterest: (data: any) => Promise<void>
+  submitContactInterest: (data: ContactInterestInsert) => Promise<void>
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
 }
 
-export const useAppStore = create<AppState>((set, get) => ({
+export const useAppStore = create<AppState>((set) => ({
   // Initial state
   isAuthenticated: false,
   user: null,
@@ -63,8 +80,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       else query = query.order('created_at', { ascending: false })
 
       // Apply pagination
-      const page = filters.page || 1
-      const limit = filters.limit || 12
+      const page = filters.page ?? 1
+      const limit = filters.limit ?? 12
       const start = (page - 1) * limit
       
       query = query.range(start, start + limit - 1)
@@ -145,7 +162,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
   },
 
-  submitContactInterest: async (data: any) => {
+  submitContactInterest: async (data: ContactInterestInsert) => {
     set({ loading: true, error: null })
     try {
       const { error } = await supabase

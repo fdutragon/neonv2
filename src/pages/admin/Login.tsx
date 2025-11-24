@@ -28,8 +28,9 @@ export default function AdminLogin() {
       if (data.user) {
         setAuth(true, data.user)
       }
-    } catch (error: any) {
-      setError(error.message || 'Erro ao fazer login')
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erro ao fazer login'
+      setError(message)
     } finally {
       setLoading(false)
     }

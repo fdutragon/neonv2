@@ -9,6 +9,23 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+export interface Specifications {
+  engine?: string
+  power?: string
+  torque?: string
+  acceleration?: string
+  top_speed?: string
+  consumption?: string
+  transmission?: string
+  traction?: string
+  drivetrain?: string
+  doors?: string
+  seats?: string
+  trunk?: string
+  weight?: string
+  [key: string]: string | undefined
+}
+
 export interface Vehicle {
   id: string
   brand: string
@@ -20,7 +37,7 @@ export interface Vehicle {
   category: 'sedan' | 'suv' | 'hatchback' | 'pickup' | 'coupe' | 'convertible' | 'wagon'
   featured: boolean
   featured_order: number
-  specifications: Record<string, any>
+  specifications: Specifications
   description: string | null
   created_by: string | null
   created_at: string

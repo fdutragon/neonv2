@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAppStore } from '@/stores/appStore'
-import { Car, Filter, Grid, List, Search as SearchIcon, ChevronDown } from 'lucide-react'
+import { Car, Filter, Grid, List, Search as SearchIcon } from 'lucide-react'
 
 export default function VehicleSearch() {
   const { vehicles, loading, fetchVehicles } = useAppStore()

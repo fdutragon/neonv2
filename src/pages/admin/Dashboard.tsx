@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppStore } from '@/stores/appStore'
-import { supabase } from '@/lib/supabase'
+import { supabase, ContactInterest } from '@/lib/supabase'
 import { Car, Users, Star, Eye, Plus, TrendingUp, Calendar, DollarSign } from 'lucide-react'
 
 export default function AdminDashboard() {
@@ -12,7 +12,7 @@ export default function AdminDashboard() {
     totalContacts: 0,
     recentViews: 0
   })
-  const [recentContacts, setRecentContacts] = useState<any[]>([])
+  const [recentContacts, setRecentContacts] = useState<(ContactInterest & { vehicles?: { brand: string; model: string } })[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

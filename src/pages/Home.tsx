@@ -21,14 +21,15 @@ export default function Home() {
   useEffect(() => {
     const fetchModels = async () => {
       try {
-        const { data, error } = await supabase
-          .from('vehicles')
-          .select('model')
-          .order('model', { ascending: true })
+    const { data, error } = await supabase
+      .from('vehicles')
+      .select('model')
+      .order('model', { ascending: true })
 
         if (error) throw error
 
-        const unique = Array.from(new Set((data || []).map((v: any) => v.model))).filter(Boolean)
+        const modelsData = (data as { model: string }[] | null) ?? []
+        const unique = Array.from(new Set(modelsData.map((v) => v.model))).filter(Boolean)
         setModels(unique)
         setFilteredModels(unique)
       } catch (e) {
