@@ -1,20 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAppStore } from '@/stores/appStore'
-import { Car, Phone, Mail, User, Calendar, Fuel, Gauge, Package, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Car, Calendar, Fuel, Gauge, Package, ChevronLeft, ChevronRight } from 'lucide-react'
 
 export default function VehicleDetail() {
   const { id } = useParams<{ id: string }>()
-  const { selectedVehicle, loading, fetchVehicleById, submitContactInterest } = useAppStore()
+  const { selectedVehicle, loading, fetchVehicleById } = useAppStore()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [contactForm, setContactForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  })
-  const [submitting, setSubmitting] = useState(false)
-  const [submitSuccess, setSubmitSuccess] = useState(false)
+  
 
   useEffect(() => {
     if (id) {
@@ -22,34 +15,11 @@ export default function VehicleDetail() {
     }
   }, [id])
 
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!id) return
-
-    setSubmitting(true)
-    try {
-      // optional: register interest in DB
-      await submitContactInterest({
-        vehicle_id: id,
-        customer_name: contactForm.name,
-        customer_email: contactForm.email,
-        customer_phone: contactForm.phone,
-        message: contactForm.message
-      })
-
-      // open WhatsApp with prefilled message
-      const v = selectedVehicle
-      const text = `Olá! Tenho interesse no veículo ${v?.brand} ${v?.model} (${v?.year}).\nPreço: ${formatPrice(v?.price || 0)}\nNome: ${contactForm.name}\nTelefone: ${contactForm.phone}\nMensagem: ${contactForm.message}`
-      const url = `https://wa.me/5511942618407?text=${encodeURIComponent(text)}`
-      window.open(url, '_blank')
-      setSubmitSuccess(true)
-      setContactForm({ name: '', email: '', phone: '', message: '' })
-      setTimeout(() => setSubmitSuccess(false), 5000)
-    } catch (error) {
-      console.error('Error submitting contact form:', error)
-    } finally {
-      setSubmitting(false)
-    }
+  const whatsappLink = (v?: { brand: string; model: string; year: number; price: number }) => {
+    const base = 'https://wa.me/5511942618407'
+    if (!v) return base
+    const text = `Olá! Tenho interesse no veículo ${v.brand} ${v.model} (${v.year}). Preço: ${formatPrice(v.price)}.`
+    return `${base}?text=${encodeURIComponent(text)}`
   }
 
   const formatPrice = (price: number) => {
@@ -237,96 +207,21 @@ export default function VehicleDetail() {
           </div>
         </div>
 
-        {/* Contact via WhatsApp */}
+        {/* WhatsApp CTA */}
         <div className="mt-12 bg-white rounded-lg shadow-lg p-6">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">Contato via WhatsApp</h3>
-          
-          {submitSuccess && (
-            <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-              <p className="font-semibold">Obrigado pelo seu interesse!</p>
-              <p>Entraremos em contato em breve para mais informações sobre este veículo.</p>
-            </div>
-          )}
-
-          <form onSubmit={handleContactSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Nome Completo *
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  id="name"
-                  required
-                  value={contactForm.name}
-                  onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                  placeholder="Seu nome"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email *
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="email"
-                  id="email"
-                  required
-                  value={contactForm.email}
-                  onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                  placeholder="seu@email.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                Telefone *
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="tel"
-                  id="phone"
-                  required
-                  value={contactForm.phone}
-                  onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                  placeholder="(11) 12345-6789"
-                />
-              </div>
-            </div>
-
-            <div className="md:col-span-2">
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                Mensagem
-              </label>
-              <textarea
-                id="message"
-                rows={4}
-                value={contactForm.message}
-                onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                placeholder="Tenho interesse neste veículo. Por favor, entre em contato."
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full md:w-auto px-8 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {submitting ? 'Abrindo WhatsApp...' : 'WhatsApp'}
-              </button>
-            </div>
-          </form>
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">Fale conosco no WhatsApp</h3>
+          <a
+            href={whatsappLink(selectedVehicle as any)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center px-8 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors"
+          >
+            <svg aria-hidden="true" focusable="false" width="22" height="22" viewBox="0 0 32 32" className="mr-2">
+              <path fill="currentColor" d="M19.11 17.39c-.3-.15-1.77-.87-2.05-.97c-.28-.1-.48-.15-.68.15c-.2.3-.78.97-.95 1.17c-.17.2-.35.22-.65.07c-.3-.15-1.27-.47-2.42-1.5c-.89-.79-1.49-1.76-1.66-2.06c-.17-.3-.02-.47.13-.62c.13-.13.3-.35.45-.52c.15-.17.2-.3.3-.5c.1-.2.05-.37-.03-.52c-.08-.15-.68-1.63-.93-2.23c-.24-.58-.49-.5-.68-.5h-.58c-.2 0-.52.07-.79.37c-.27.3-1.04 1.02-1.04 2.48c0 1.46 1.07 2.87 1.22 3.07c.15.2 2.1 3.21 5.07 4.5c.71.31 1.26.49 1.69.62c.71.23 1.36.2 1.88.12c.58-.09 1.77-.72 2.02-1.42c.25-.7.25-1.3.17-1.42c-.08-.12-.27-.2-.57-.35z"/>
+              <path fill="currentColor" d="M16.02 3C9.38 3 4 8.37 4 15c0 2.66.87 5.13 2.35 7.13L4 29l6.04-2.31C12 27.85 13.98 28 16.02 28C22.66 28 28 22.62 28 16c0-6.63-5.34-13-11.98-13zm0 22c-1.88 0-3.63-.49-5.15-1.36l-.37-.22l-3.59 1.37l1.35-3.5l-.24-.37C6.5 19.14 6 17.61 6 16c0-5.53 4.49-10 10.02-10C21.54 6 26 10.47 26 16c0 5.53-4.46 9-9.98 9z"/>
+            </svg>
+            Fale conosco no WhatsApp
+          </a>
         </div>
       </div>
     </div>
