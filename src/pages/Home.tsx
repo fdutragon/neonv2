@@ -13,6 +13,7 @@ export default function Home() {
   const [filteredModels, setFilteredModels] = useState<string[]>([])
   const [selectedModel, setSelectedModel] = useState<string>('')
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const topModels = ['320i M Sport','C 200 AMG Line','A4 Prestige','911 Carrera','M3 Competition']
 
   useEffect(() => {
     fetchFeaturedVehicles()
@@ -42,7 +43,7 @@ export default function Home() {
   useEffect(() => {
     const q = modelQuery.trim().toLowerCase()
     if (!q) {
-      setFilteredModels([])
+      setFilteredModels(topModels)
       setSelectedModel('')
       setDropdownOpen(false)
       return
@@ -121,15 +122,23 @@ export default function Home() {
                     />
                     {dropdownOpen && filteredModels.length > 0 && (
                       <ul className="absolute z-10 mt-2 w-full bg-white text-gray-900 rounded-md shadow-lg max-h-56 overflow-auto">
-                        {filteredModels.map((m) => (
-                          <li
-                            key={m}
-                            className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${selectedModel === m ? 'bg-gray-100' : ''}`}
-                            onClick={() => { setSelectedModel(m); setModelQuery(m); setDropdownOpen(false) }}
-                          >
-                            {m}
-                          </li>
-                        ))}
+                      {filteredModels.map((m) => (
+                        <li
+                          key={m}
+                          className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${selectedModel === m ? 'bg-gray-100' : ''}`}
+                          onClick={() => {
+                            setSelectedModel(m)
+                            setModelQuery(m)
+                            setDropdownOpen(false)
+                            const params = new URLSearchParams()
+                            params.set('model', m)
+                            params.set('sort_by', 'created_at_desc')
+                            navigate(`/search?${params.toString()}`)
+                          }}
+                        >
+                          {m}
+                        </li>
+                      ))}
                       </ul>
                     )}
                   </div>

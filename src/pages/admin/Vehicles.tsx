@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { Vehicle } from '@/lib/supabase'
 import { Car, Edit, Trash2, Star, Plus, Search, Filter, Eye } from 'lucide-react'
 
 export default function AdminVehicles() {
+  const navigate = useNavigate()
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -230,14 +231,13 @@ export default function AdminVehicles() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center space-x-2">
-                          <Link
-                            to={`/vehicle/${vehicle.id}`}
-                            target="_blank"
+                          <button
+                            onClick={() => navigate(`/vehicle/${vehicle.id}`)}
                             className="text-blue-600 hover:text-blue-900 p-1"
                             title="Ver no site"
                           >
                             <Eye className="h-4 w-4" />
-                          </Link>
+                          </button>
                           <Link
                             to={`/admin/vehicles/edit/${vehicle.id}`}
                             className="text-indigo-600 hover:text-indigo-900 p-1"
