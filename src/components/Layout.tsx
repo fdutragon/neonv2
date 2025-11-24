@@ -146,13 +146,15 @@ export default function Layout() {
                 <p>📍 Jorge Caixe, 323 - Jardim Nomura - Cotia/SP</p>
                 <p>📞 11 94261-8407</p>
                 <p>✉️ contato@neonmultimarcas.com</p>
-                <p>📷 Instagram: @neon_multimarcas</p>
+                <p>
+                  📷 Instagram: <a href="https://instagram.com/neon_multimarcas" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-white">@neon_multimarcas</a>
+                </p>
               </div>
             </div>
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 Neon Multimarcas. Todos os direitos reservados.</p>
+            <p>&copy; 2025 Neon Multimarcas. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

@@ -35,7 +35,7 @@ export default function VehicleForm() {
     { value: 'gasoline', label: 'Gasolina' },
     { value: 'diesel', label: 'Diesel' },
     { value: 'electric', label: 'Elétrico' },
-    { value: 'hybrid', label: 'Híbrido' }
+    { value: 'flex', label: 'Flex' }
   ]
 
   const categories = [
@@ -53,12 +53,7 @@ export default function VehicleForm() {
   const specificationFields = [
     { key: 'engine', label: 'Motor', placeholder: '2.0 Turbo' },
     { key: 'power', label: 'Potência', placeholder: '250 cv' },
-    { key: 'torque', label: 'Torque', placeholder: '35 kgfm' },
-    { key: 'acceleration', label: 'Aceleração', placeholder: '0-100 km/h em 6.5s' },
-    { key: 'top_speed', label: 'Velocidade Máxima', placeholder: '240 km/h' },
-    { key: 'consumption', label: 'Consumo', placeholder: '12 km/l cidade' },
-    { key: 'transmission', label: 'Câmbio', placeholder: '' },
-    { key: 'traction', label: 'Tração', placeholder: 'Integral' }
+    { key: 'transmission', label: 'Câmbio', placeholder: '' }
   ]
 
   useEffect(() => {
@@ -415,8 +410,8 @@ export default function VehicleForm() {
                 </select>
               </div>
 
-              <div>
-                <label htmlFor="featured" className="flex items-center space-x-2">
+              <div className="flex items-center">
+                <label htmlFor="featured" className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     id="featured"

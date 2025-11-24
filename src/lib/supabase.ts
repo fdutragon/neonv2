@@ -33,7 +33,7 @@ export interface Vehicle {
   year: number
   price: number
   mileage: number
-  fuel_type: 'gasoline' | 'diesel' | 'electric' | 'hybrid'
+  fuel_type: 'gasoline' | 'diesel' | 'electric' | 'flex'
   category: 'sedan' | 'suv' | 'hatchback' | 'pickup' | 'coupe' | 'convertible' | 'wagon'
   | 'utility'
   featured: boolean

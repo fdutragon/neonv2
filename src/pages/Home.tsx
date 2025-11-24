@@ -8,11 +8,18 @@ export default function Home() {
   const { featuredVehicles, loading, fetchFeaturedVehicles } = useAppStore()
   const navigate = useNavigate()
 
+  const [brandQuery, setBrandQuery] = useState('')
+  const [brands, setBrands] = useState<string[]>([])
+  const [filteredBrands, setFilteredBrands] = useState<string[]>([])
+  const [selectedBrand, setSelectedBrand] = useState<string>('')
+  const [brandDropdownOpen, setBrandDropdownOpen] = useState(false)
+
   const [modelQuery, setModelQuery] = useState('')
   const [models, setModels] = useState<string[]>([])
   const [filteredModels, setFilteredModels] = useState<string[]>([])
   const [selectedModel, setSelectedModel] = useState<string>('')
-  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false)
+  const topBrands = ['Audi','BMW','Mercedes-Benz','Porsche','Jaguar','Land Rover','Volvo']
   const topModels = ['320i M Sport','C 200 AMG Line','A4 Prestige','911 Carrera','M3 Competition']
 
   useEffect(() => {
@@ -41,18 +48,53 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('vehicles')
+          .select('brand')
+          .order('brand', { ascending: true })
+
+        if (error) throw error
+
+        const brandsData = (data as { brand: string }[] | null) ?? []
+        const unique = Array.from(new Set(brandsData.map((v) => v.brand))).filter(Boolean)
+        setBrands(unique)
+        setFilteredBrands(unique)
+      } catch (e) {
+        console.error('Erro ao carregar marcas', e)
+      }
+    }
+    fetchBrands()
+  }, [])
+
+  useEffect(() => {
     const q = modelQuery.trim().toLowerCase()
     if (!q) {
       setFilteredModels(topModels)
       setSelectedModel('')
-      setDropdownOpen(false)
+      setModelDropdownOpen(false)
       return
     }
     const filtered = models.filter((m) => m.toLowerCase().includes(q)).slice(0, 10)
     setFilteredModels(filtered)
-    setDropdownOpen(filtered.length > 0)
+    setModelDropdownOpen(filtered.length > 0)
     if (!filtered.includes(selectedModel)) setSelectedModel('')
   }, [modelQuery, models])
+
+  useEffect(() => {
+    const q = brandQuery.trim().toLowerCase()
+    if (!q) {
+      setFilteredBrands(topBrands)
+      setSelectedBrand('')
+      setBrandDropdownOpen(false)
+      return
+    }
+    const filtered = brands.filter((b) => b.toLowerCase().includes(q)).slice(0, 10)
+    setFilteredBrands(filtered)
+    setBrandDropdownOpen(filtered.length > 0)
+    if (!filtered.includes(selectedBrand)) setSelectedBrand('')
+  }, [brandQuery, brands])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -65,7 +107,7 @@ export default function Home() {
     gasoline: 'Gasolina',
     diesel: 'Diesel',
     electric: 'Elétrico',
-    hybrid: 'Híbrido'
+    flex: 'Flex'
   }
 
   const categoryLabel: Record<string, string> = {
@@ -94,57 +136,105 @@ export default function Home() {
               A maior seleção de veículos Perfeito com a qualidade e confiança que você merece.
               Concessionária especializada em carros de alto padrão.
             </p>
-            {/* Quick Model Autosuggest */}
+            {/* Quick Brand & Model Autosuggest */}
             <form
               onSubmit={(e) => {
                 e.preventDefault()
+                const targetBrand = selectedBrand || (filteredBrands.includes(brandQuery) ? brandQuery : '')
                 const targetModel = selectedModel || (filteredModels.includes(modelQuery) ? modelQuery : '')
-                if (!targetModel) return
+                if (!targetBrand && !targetModel) return
                 const params = new URLSearchParams()
-                params.set('model', targetModel)
+                if (targetBrand) params.set('brand', targetBrand)
+                if (targetModel) params.set('model', targetModel)
                 params.set('sort_by', 'created_at_desc')
                 navigate(`/search?${params.toString()}`)
               }}
               className="mt-10 bg-white/10 backdrop-blur rounded-lg p-4 md:p-6 max-w-3xl mx-auto"
             >
               <div className="text-left">
-                <label className="block text-sm text-gray-300 mb-2">Modelo</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-2">Marca</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={brandQuery}
+                        onChange={(e) => setBrandQuery(e.target.value)}
+                        onFocus={() => setBrandDropdownOpen(brandQuery.trim().length >= 1 && filteredBrands.length > 0)}
+                        onBlur={() => setTimeout(() => setBrandDropdownOpen(false), 100)}
+                        placeholder="Digite a marca (ex: BMW, Audi)"
+                        className="w-full px-4 py-3 rounded-md bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-yellow-400"
+                      />
+                      {brandDropdownOpen && filteredBrands.length > 0 && (
+                        <ul className="absolute z-10 mt-2 w-full bg-white text-gray-900 rounded-md shadow-lg max-h-56 overflow-auto">
+                          {filteredBrands.map((b) => (
+                            <li
+                              key={b}
+                              className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${selectedBrand === b ? 'bg-gray-100' : ''}`}
+                              onMouseDown={() => {
+                                setSelectedBrand(b)
+                                setBrandQuery(b)
+                                setBrandDropdownOpen(false)
+                                const params = new URLSearchParams()
+                                params.set('brand', b)
+                                params.set('sort_by', 'created_at_desc')
+                                navigate(`/search?${params.toString()}`)
+                              }}
+                            >
+                              {b}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-300 mb-2">Modelo</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={modelQuery}
+                        onChange={(e) => setModelQuery(e.target.value)}
+                        onFocus={() => setModelDropdownOpen(modelQuery.trim().length >= 1 && filteredModels.length > 0)}
+                        onBlur={() => setTimeout(() => setModelDropdownOpen(false), 100)}
+                        placeholder="Digite o modelo (ex: 320i, GLE 450, A4)"
+                        className="w-full px-4 py-3 rounded-md bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-yellow-400"
+                      />
+                      {modelDropdownOpen && filteredModels.length > 0 && (
+                        <ul className="absolute z-10 mt-2 w-full bg-white text-gray-900 rounded-md shadow-lg max-h-56 overflow-auto">
+                          {filteredModels.map((m) => (
+                            <li
+                              key={m}
+                              className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${selectedModel === m ? 'bg-gray-100' : ''}`}
+                              onMouseDown={() => {
+                                setSelectedModel(m)
+                                setModelQuery(m)
+                                setModelDropdownOpen(false)
+                                const params = new URLSearchParams()
+                                if (selectedBrand || brandQuery) {
+                                  const b = selectedBrand || (filteredBrands.includes(brandQuery) ? brandQuery : '')
+                                  if (b) params.set('brand', b)
+                                }
+                                params.set('model', m)
+                                params.set('sort_by', 'created_at_desc')
+                                navigate(`/search?${params.toString()}`)
+                              }}
+                            >
+                              {m}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                </div>
                 <div className="flex items-center gap-3">
                   <div className="relative flex-1">
-                    <input
-                      type="text"
-                      value={modelQuery}
-                      onChange={(e) => setModelQuery(e.target.value)}
-                      onFocus={() => setDropdownOpen(modelQuery.trim().length >= 2 && filteredModels.length > 0)}
-                      onBlur={() => setTimeout(() => setDropdownOpen(false), 100)}
-                      placeholder="Digite o modelo (ex: 320i, GLE 450, A4)"
-                      className="w-full px-4 py-3 rounded-md bg-white text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-yellow-400"
-                    />
-                    {dropdownOpen && filteredModels.length > 0 && (
-                      <ul className="absolute z-10 mt-2 w-full bg-white text-gray-900 rounded-md shadow-lg max-h-56 overflow-auto">
-                      {filteredModels.map((m) => (
-                        <li
-                          key={m}
-                          className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${selectedModel === m ? 'bg-gray-100' : ''}`}
-                          onClick={() => {
-                            setSelectedModel(m)
-                            setModelQuery(m)
-                            setDropdownOpen(false)
-                            const params = new URLSearchParams()
-                            params.set('model', m)
-                            params.set('sort_by', 'created_at_desc')
-                            navigate(`/search?${params.toString()}`)
-                          }}
-                        >
-                          {m}
-                        </li>
-                      ))}
-                      </ul>
-                    )}
+                    {/* vazio apenas para manter alinhamento responsivo */}
                   </div>
                   <button
                     type="submit"
-                    disabled={(selectedModel || (filteredModels.includes(modelQuery) ? modelQuery : '')).length === 0}
+                    disabled={!(selectedBrand || filteredBrands.includes(brandQuery) || selectedModel || filteredModels.includes(modelQuery))}
                     className="inline-flex items-center px-6 py-3 bg-yellow-400 text-gray-900 font-semibold rounded-md hover:bg-yellow-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Search className="mr-2 h-5 w-5" />

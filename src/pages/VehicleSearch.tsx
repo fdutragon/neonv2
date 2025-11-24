@@ -26,7 +26,7 @@ export default function VehicleSearch() {
     { value: 'gasoline', label: 'Gasolina' },
     { value: 'diesel', label: 'Diesel' },
     { value: 'electric', label: 'Elétrico' },
-    { value: 'hybrid', label: 'Híbrido' }
+    { value: 'flex', label: 'Flex' }
   ]
   const categories = [
     { value: 'sedan', label: 'Sedan' },
@@ -419,7 +419,7 @@ export default function VehicleSearch() {
     gasoline: 'Gasolina',
     diesel: 'Diesel',
     electric: 'Elétrico',
-    hybrid: 'Híbrido'
+    flex: 'Flex'
   }
 
   const categoryLabel: Record<string, string> = {

@@ -28,6 +28,7 @@ export default function VehicleDetail() {
 
     setSubmitting(true)
     try {
+      // optional: register interest in DB
       await submitContactInterest({
         vehicle_id: id,
         customer_name: contactForm.name,
@@ -35,13 +36,15 @@ export default function VehicleDetail() {
         customer_phone: contactForm.phone,
         message: contactForm.message
       })
-      
+
+      // open WhatsApp with prefilled message
+      const v = selectedVehicle
+      const text = `Olá! Tenho interesse no veículo ${v?.brand} ${v?.model} (${v?.year}).\nPreço: ${formatPrice(v?.price || 0)}\nNome: ${contactForm.name}\nTelefone: ${contactForm.phone}\nMensagem: ${contactForm.message}`
+      const url = `https://wa.me/5511942618407?text=${encodeURIComponent(text)}`
+      window.open(url, '_blank')
       setSubmitSuccess(true)
       setContactForm({ name: '', email: '', phone: '', message: '' })
-      
-      setTimeout(() => {
-        setSubmitSuccess(false)
-      }, 5000)
+      setTimeout(() => setSubmitSuccess(false), 5000)
     } catch (error) {
       console.error('Error submitting contact form:', error)
     } finally {
@@ -234,9 +237,9 @@ export default function VehicleDetail() {
           </div>
         </div>
 
-        {/* Contact Form */}
+        {/* Contact via WhatsApp */}
         <div className="mt-12 bg-white rounded-lg shadow-lg p-6">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">Entre em Contato</h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">Contato via WhatsApp</h3>
           
           {submitSuccess && (
             <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
@@ -318,9 +321,9 @@ export default function VehicleDetail() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full md:w-auto px-8 py-3 bg-blue-900 text-white font-semibold rounded-lg hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full md:w-auto px-8 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {submitting ? 'Enviando...' : 'Enviar Interesse'}
+                {submitting ? 'Abrindo WhatsApp...' : 'WhatsApp'}
               </button>
             </div>
           </form>
@@ -333,7 +336,7 @@ export default function VehicleDetail() {
     gasoline: 'Gasolina',
     diesel: 'Diesel',
     electric: 'Elétrico',
-    hybrid: 'Híbrido'
+    flex: 'Flex'
   }
 
   const categoryLabel: Record<string, string> = {
