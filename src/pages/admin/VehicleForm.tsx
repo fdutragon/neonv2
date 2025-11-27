@@ -292,6 +292,36 @@ export default function VehicleForm() {
     setSaving(true)
 
     try {
+      // Validate data before submitting
+      const dataToSubmit = {
+        ...formData,
+        // Ensure numeric fields are valid numbers
+        year: Number(formData.year) || new Date().getFullYear(),
+        price: Number(formData.price) || 0,
+        mileage: Number(formData.mileage) || 0,
+        featured_order: Number(formData.featured_order) || 0,
+        // Ensure boolean is proper boolean
+        featured: Boolean(formData.featured),
+        // Ensure strings are not empty
+        brand: formData.brand.trim(),
+        model: formData.model.trim(),
+        fuel_type: formData.fuel_type || 'gasoline',
+        category: formData.category || 'sedan',
+        description: formData.description?.trim() || '',
+        specifications: formData.specifications || {}
+      }
+
+      // Additional validation
+      if (!dataToSubmit.brand || !dataToSubmit.model) {
+        alert('Marca e modelo são obrigatórios')
+        return
+      }
+
+      if (dataToSubmit.price < 0 || dataToSubmit.mileage < 0) {
+        alert('Preço e quilometragem devem ser valores positivos')
+        return
+      }
+
       let vehicleId = id
 
       if (id) {
@@ -299,7 +329,7 @@ export default function VehicleForm() {
         const { error } = await supabase
           .from('vehicles')
           .update({
-            ...formData,
+            ...dataToSubmit,
             updated_at: new Date().toISOString()
           })
           .eq('id', id)
@@ -309,7 +339,7 @@ export default function VehicleForm() {
         // Create new vehicle
         const { data, error } = await supabase
           .from('vehicles')
-          .insert([formData])
+          .insert([dataToSubmit])
           .select()
           .single()
 
@@ -324,9 +354,10 @@ export default function VehicleForm() {
 
       alert(id ? 'Veículo atualizado com sucesso!' : 'Veículo criado com sucesso!')
       navigate('/admin/vehicles')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving vehicle:', error)
-      alert('Erro ao salvar veículo')
+      const errorMessage = error?.message || 'Erro desconhecido'
+      alert(`Erro ao salvar veículo: ${errorMessage}`)
     } finally {
       setSaving(false)
     }
