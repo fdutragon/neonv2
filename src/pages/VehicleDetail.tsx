@@ -19,6 +19,9 @@ export default function VehicleDetail() {
   
 
   useEffect(() => {
+    // Scroll to top when component mounts or id changes
+    window.scrollTo(0, 0)
+    
     if (id) {
       fetchVehicleById(id)
     }
@@ -97,9 +100,9 @@ export default function VehicleDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-3">
       {/* Header */}
-      <div className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-10 shadow-sm">
+      <div className="border-b bg-white/95 backdrop-blur-md sticky top-[60px] left-0 right-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link 
             to="/search" 

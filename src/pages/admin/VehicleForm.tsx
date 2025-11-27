@@ -623,25 +623,30 @@ export default function VehicleForm() {
             )}
 
             {/* New Images Upload */}
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
               <div className="text-center">
                 <Upload className="mx-auto h-12 w-12 text-gray-400" />
                 <div className="mt-4">
-                  <label className="cursor-pointer">
-                    <span className="mt-2 block text-sm font-medium text-gray-900">
-                      Clique para adicionar imagens
+                  <label htmlFor="image-upload" className="cursor-pointer inline-block">
+                    <span className="mt-2 block text-sm font-medium text-gray-900 px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                      📸 Adicionar Fotos
                     </span>
                     <input
+                      id="image-upload"
                       type="file"
                       multiple
-                      accept="image/*"
+                      accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                      capture="environment"
                       onChange={handleImageUpload}
                       className="sr-only"
                     />
                   </label>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  PNG, JPG, GIF até 10MB
+                  PNG, JPG, GIF, WEBP até 10MB cada
+                </p>
+                <p className="text-xs text-blue-600 mt-1">
+                  Toque para usar a câmera ou galeria
                 </p>
               </div>
             </div>
