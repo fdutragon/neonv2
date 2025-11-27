@@ -143,10 +143,13 @@ export default function VehicleForm() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
     
+    // Skip price field as it has custom onChange handler
+    if (name === 'price') return
+    
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked
       setFormData(prev => ({ ...prev, [name]: checked }))
-    } else if (name === 'year' || name === 'price' || name === 'mileage' || name === 'featured_order') {
+    } else if (name === 'year' || name === 'mileage' || name === 'featured_order') {
       setFormData(prev => ({ ...prev, [name]: parseInt(value) || 0 }))
     } else {
       setFormData(prev => ({ ...prev, [name]: value }))
@@ -197,11 +200,23 @@ export default function VehicleForm() {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
-    setImages(prev => [...prev, ...files])
+    if (files.length > 0) {
+      setImages(prev => [...prev, ...files])
+      // Reset input to allow selecting the same file again
+      e.target.value = ''
+    }
   }
 
   const removeImage = (index: number) => {
-    setImages(prev => prev.filter((_, i) => i !== index))
+    setImages(prev => {
+      const newImages = prev.filter((_, i) => i !== index)
+      // Clean up object URL to prevent memory leak
+      const file = prev[index]
+      if (file) {
+        URL.revokeObjectURL(URL.createObjectURL(file))
+      }
+      return newImages
+    })
   }
 
   const removeExistingImage = async (imageId: string) => {
@@ -229,7 +244,16 @@ export default function VehicleForm() {
     try {
       for (let i = 0; i < images.length; i++) {
         const file = images[i]
-        const fileName = `${vehicleId}/${Date.now()}-${file.name}`
+        
+        // Sanitize filename: remove special characters, spaces, and accents
+        const sanitizedName = file.name
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '') // Remove accents
+          .replace(/[^a-zA-Z0-9.-]/g, '_') // Replace special chars with underscore
+          .replace(/_{2,}/g, '_') // Replace multiple underscores with single
+          .toLowerCase()
+        
+        const fileName = `${vehicleId}/${Date.now()}-${sanitizedName}`
         
         // Upload to Supabase Storage
         const { error: uploadError } = await supabase.storage
@@ -653,25 +677,30 @@ export default function VehicleForm() {
 
             {/* Preview of new images */}
             {images.length > 0 && (
-              <div className="mt-4">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Novas Imagens</h3>
+              <div className="mt-4 mb-4">
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Novas Imagens ({images.length})</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {images.map((file, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt={`Nova imagem ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))}
+                  {images.map((file, index) => {
+                    const imageUrl = URL.createObjectURL(file)
+                    return (
+                      <div key={`${file.name}-${index}`} className="relative group aspect-square">
+                        <img
+                          src={imageUrl}
+                          alt={`Nova imagem ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg border border-gray-200"
+                          onLoad={() => URL.revokeObjectURL(imageUrl)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full shadow-lg transition-all"
+                          title="Remover imagem"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}
