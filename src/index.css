@@ -16,9 +16,25 @@
 /* Remove scroll do body apenas no admin para evitar scrollbar dupla */
 body.admin-layout {
   overflow: hidden;
+  /* Suporte para safe-area em dispositivos móveis */
+  height: 100vh;
+  height: -webkit-fill-available;
 }
 
 body.admin-layout #root {
   height: 100vh;
+  height: -webkit-fill-available;
   overflow: hidden;
+}
+
+/* Padding para safe-area em dispositivos móveis */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Fix para teclado virtual no mobile */
+@supports (-webkit-touch-callout: none) {
+  body.admin-layout {
+    height: -webkit-fill-available;
+  }
 }

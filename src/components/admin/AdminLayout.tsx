@@ -107,8 +107,10 @@ export default function AdminLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-6 overflow-y-auto overflow-x-hidden bg-gray-50">
-          <Outlet />
+        <main className="flex-1 p-6 overflow-y-auto overflow-x-hidden bg-gray-50 min-h-0">
+          <div className="min-h-full pb-safe">
+            <Outlet />
+          </div>
         </main>
       </div>
 
