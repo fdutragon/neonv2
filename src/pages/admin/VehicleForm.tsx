@@ -293,6 +293,9 @@ export default function VehicleForm() {
 
     try {
       // Validate data before submitting
+      const validFuelTypes = ['gasoline', 'diesel', 'electric', 'flex']
+      const validCategories = ['sedan', 'suv', 'hatchback', 'pickup', 'coupe', 'convertible', 'wagon', 'utility', 'motorcycle']
+      
       const dataToSubmit = {
         ...formData,
         // Ensure numeric fields are valid numbers
@@ -305,8 +308,10 @@ export default function VehicleForm() {
         // Ensure strings are not empty
         brand: formData.brand.trim(),
         model: formData.model.trim(),
-        fuel_type: formData.fuel_type || 'gasoline',
-        category: formData.category || 'sedan',
+        // Validate fuel_type against allowed values
+        fuel_type: validFuelTypes.includes(formData.fuel_type) ? formData.fuel_type : 'gasoline',
+        // Validate category against allowed values
+        category: validCategories.includes(formData.category) ? formData.category : 'sedan',
         description: formData.description?.trim() || '',
         specifications: formData.specifications || {}
       }
@@ -322,6 +327,9 @@ export default function VehicleForm() {
         return
       }
 
+      // Log data for debugging
+      console.log('Submitting vehicle data:', dataToSubmit)
+
       let vehicleId = id
 
       if (id) {
@@ -334,7 +342,10 @@ export default function VehicleForm() {
           })
           .eq('id', id)
 
-        if (error) throw error
+        if (error) {
+          console.error('Update error:', error)
+          throw error
+        }
       } else {
         // Create new vehicle
         const { data, error } = await supabase
@@ -343,7 +354,10 @@ export default function VehicleForm() {
           .select()
           .single()
 
-        if (error) throw error
+        if (error) {
+          console.error('Insert error:', error)
+          throw error
+        }
         vehicleId = data.id
       }
 
