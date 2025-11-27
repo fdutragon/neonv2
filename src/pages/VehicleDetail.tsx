@@ -8,6 +8,7 @@ export default function VehicleDetail() {
   const { id } = useParams<{ id: string }>()
   const { selectedVehicle, loading, fetchVehicleById } = useAppStore()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [relatedVehicles, setRelatedVehicles] = useState<any[]>([])
   
 
   useEffect(() => {
@@ -15,6 +16,28 @@ export default function VehicleDetail() {
       fetchVehicleById(id)
     }
   }, [id])
+
+  useEffect(() => {
+    const fetchRelated = async () => {
+      if (!selectedVehicle) return
+      
+      try {
+        const { data } = await import('@/lib/supabase').then(m => m.supabase
+          .from('vehicles')
+          .select('id, brand, model, year, price, mileage, fuel_type, category, images:vehicle_images(image_url)')
+          .neq('id', selectedVehicle.id)
+          .eq('category', selectedVehicle.category)
+          .limit(3)
+        )
+        
+        setRelatedVehicles(data || [])
+      } catch (error) {
+        console.error('Error fetching related vehicles:', error)
+      }
+    }
+    
+    fetchRelated()
+  }, [selectedVehicle])
 
   const whatsappLink = (v?: { brand: string; model: string; year: number; price: number }) => {
     const base = 'https://wa.me/5511942618407'
@@ -69,7 +92,7 @@ export default function VehicleDetail() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
+      <div className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link 
             to="/search" 
@@ -97,7 +120,7 @@ export default function VehicleDetail() {
               />
               
               {selectedVehicle.featured && (
-                <div className="absolute top-3 left-3 bg-primary text-primary-foreground px-3 py-1 rounded-md text-xs font-medium">
+                <div className="absolute top-3 left-3 bg-black text-white px-3 py-1 rounded-md text-xs font-medium">
                   Destaque
                 </div>
               )}
@@ -257,6 +280,48 @@ export default function VehicleDetail() {
           </div>
         </div>
       </div>
+
+      {/* Related Vehicles Section */}
+      {relatedVehicles.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 className="text-2xl font-bold mb-6">Você também pode gostar</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedVehicles.map((vehicle) => (
+              <Link
+                key={vehicle.id}
+                to={`/vehicle/${vehicle.id}`}
+                className="group bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-all"
+              >
+                <div className="relative aspect-video bg-muted overflow-hidden">
+                  <VehicleImage
+                    src={vehicle.images?.[0]?.image_url}
+                    alt={`${vehicle.brand} ${vehicle.model}`}
+                    brand={vehicle.brand}
+                    model={vehicle.model}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                
+                <div className="p-4">
+                  <p className="text-xs text-muted-foreground mb-1">{vehicle.year}</p>
+                  <h3 className="text-base font-semibold mb-2 group-hover:text-primary transition-colors">
+                    {vehicle.brand} {vehicle.model}
+                  </h3>
+                  
+                  <div className="flex items-center justify-between pt-3 border-t">
+                    <span className="text-lg font-bold">
+                      {formatPrice(vehicle.price)}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {vehicle.mileage.toLocaleString('pt-BR')} km
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Botão Flutuante Mobile */}
       <a

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
-import { Car, Grid, List, Search as SearchIcon } from 'lucide-react'
+import { Car, Grid, List, Search as SearchIcon, ArrowRight } from 'lucide-react'
 import { VehicleImage } from '@/components/VehicleImage'
 
 interface Vehicle {
@@ -185,133 +185,132 @@ export default function VehicleSearch() {
         ) : (
           <>
             {viewMode === 'grid' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {vehicles.map((vehicle) => (
-                  <div key={vehicle.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-                    <div className="relative aspect-w-16 aspect-h-9 bg-gray-200 h-56">
+                  <Link
+                    key={vehicle.id}
+                    to={`/vehicle/${vehicle.id}`}
+                    className="group bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-all"
+                  >
+                    <div className="relative aspect-video bg-muted overflow-hidden">
                       <VehicleImage
                         src={vehicle.images?.[0]?.image_url}
                         alt={`${vehicle.brand} ${vehicle.model}`}
                         brand={vehicle.brand}
                         model={vehicle.model}
-                        className="w-full h-56 object-cover"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       {vehicle.featured && (
-                        <div className="absolute top-4 right-4">
-                          <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
-                            DESTAQUE
+                        <div className="absolute top-3 right-3">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-black text-white">
+                            Destaque
                           </span>
                         </div>
                       )}
                     </div>
                     
-                    <div className="p-6">
-                      <div className="mb-3">
-                        <span className="text-sm font-medium text-gray-500">{vehicle.year}</span>
+                    <div className="p-5">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <p className="text-xs text-muted-foreground mb-1">{vehicle.year}</p>
+                          <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
+                            {vehicle.brand} {vehicle.model}
+                          </h3>
+                        </div>
                       </div>
                       
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                        {vehicle.brand} {vehicle.model}
-                      </h3>
-                      
-                      <div className="space-y-2 mb-6 text-sm text-gray-600">
-                        <div className="flex justify-between">
-                          <span>Quilometragem:</span>
-                          <span className="font-medium">{vehicle.mileage.toLocaleString('pt-BR')} km</span>
+                      <div className="grid grid-cols-2 gap-2 mb-4 text-xs">
+                        <div className="flex flex-col">
+                          <span className="text-muted-foreground">Km</span>
+                          <span className="font-medium">{vehicle.mileage.toLocaleString('pt-BR')}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>Combustível:</span>
+                        <div className="flex flex-col">
+                          <span className="text-muted-foreground">Combustível</span>
                           <span className="font-medium">{fuelLabel[vehicle.fuel_type] || vehicle.fuel_type}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>Categoria:</span>
-                          <span className="font-medium">{categoryLabel[vehicle.category] || vehicle.category}</span>
-                        </div>
                       </div>
                       
-                      <div className="border-t pt-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-xs text-gray-500 mb-1">Preço</p>
-                            <span className="text-2xl font-bold text-gray-900">
-                              {formatPrice(vehicle.price)}
-                            </span>
-                          </div>
-                          
-                          <Link
-                            to={`/vehicle/${vehicle.id}`}
-                            className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 text-sm font-bold rounded-xl hover:from-yellow-500 hover:to-yellow-600 transition-all shadow-lg hover:shadow-xl"
-                          >
-                            Ver Detalhes
-                          </Link>
+                      <div className="flex items-center justify-between pt-4 border-t">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Preço</p>
+                          <span className="text-xl font-bold">
+                            {formatPrice(vehicle.price)}
+                          </span>
+                        </div>
+                        
+                        <div className="inline-flex items-center text-sm font-medium text-primary">
+                          Ver mais
+                          <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {vehicles.map((vehicle) => (
-                  <div key={vehicle.id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-shadow">
-                    <div className="flex flex-col sm:flex-row gap-6">
-                      <div className="sm:w-64 h-40 bg-gray-100 rounded-xl flex-shrink-0 overflow-hidden">
+                  <Link
+                    key={vehicle.id}
+                    to={`/vehicle/${vehicle.id}`}
+                    className="group block bg-card rounded-lg border border-border p-5 hover:shadow-lg transition-all"
+                  >
+                    <div className="flex flex-col sm:flex-row gap-5">
+                      <div className="sm:w-48 h-32 bg-muted rounded-lg flex-shrink-0 overflow-hidden">
                         <VehicleImage
                           src={vehicle.images?.[0]?.image_url}
                           alt={`${vehicle.brand} ${vehicle.model}`}
                           brand={vehicle.brand}
                           model={vehicle.model}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                       
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-xl font-semibold mb-1 group-hover:text-primary transition-colors truncate">
                               {vehicle.brand} {vehicle.model}
                             </h3>
-                            <p className="text-gray-600">{vehicle.year}</p>
+                            <p className="text-sm text-muted-foreground">{vehicle.year}</p>
                           </div>
                           {vehicle.featured && (
-                            <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full">
-                              DESTAQUE
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-black text-white ml-2">
+                              Destaque
                             </span>
                           )}
                         </div>
                         
-                        <div className="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-600">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-sm">
                           <div>
-                            <span className="block text-gray-500">Quilometragem</span>
-                            <span className="font-medium text-gray-900">{vehicle.mileage.toLocaleString('pt-BR')} km</span>
+                            <span className="block text-xs text-muted-foreground">Km</span>
+                            <span className="font-medium">{vehicle.mileage.toLocaleString('pt-BR')}</span>
                           </div>
                           <div>
-                            <span className="block text-gray-500">Combustível</span>
-                            <span className="font-medium text-gray-900">{fuelLabel[vehicle.fuel_type] || vehicle.fuel_type}</span>
+                            <span className="block text-xs text-muted-foreground">Combustível</span>
+                            <span className="font-medium">{fuelLabel[vehicle.fuel_type] || vehicle.fuel_type}</span>
                           </div>
                           <div>
-                            <span className="block text-gray-500">Categoria</span>
-                            <span className="font-medium text-gray-900">{categoryLabel[vehicle.category] || vehicle.category}</span>
+                            <span className="block text-xs text-muted-foreground">Categoria</span>
+                            <span className="font-medium">{categoryLabel[vehicle.category] || vehicle.category}</span>
                           </div>
                           <div>
-                            <span className="block text-gray-500">Preço</span>
-                            <span className="text-xl font-bold text-gray-900">
+                            <span className="block text-xs text-muted-foreground">Preço</span>
+                            <span className="text-lg font-bold">
                               {formatPrice(vehicle.price)}
                             </span>
                           </div>
                         </div>
                         
                         <div className="flex justify-end">
-                          <Link
-                            to={`/vehicle/${vehicle.id}`}
-                            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 text-sm font-bold rounded-xl hover:from-yellow-500 hover:to-yellow-600 transition-all shadow-lg hover:shadow-xl"
-                          >
-                            Ver Detalhes
-                          </Link>
+                          <div className="inline-flex items-center text-sm font-medium text-primary">
+                            Ver mais
+                            <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

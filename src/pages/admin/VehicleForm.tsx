@@ -371,6 +371,7 @@ export default function VehicleForm() {
                   max={new Date().getFullYear() + 1}
                   value={formData.year}
                   onChange={handleInputChange}
+                  autoComplete="off"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
                 />
               </div>
@@ -388,6 +389,7 @@ export default function VehicleForm() {
                   step="1000"
                   value={formData.price}
                   onChange={handleInputChange}
+                  autoComplete="off"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
                 />
               </div>
@@ -405,6 +407,7 @@ export default function VehicleForm() {
                   step="1000"
                   value={formData.mileage}
                   onChange={handleInputChange}
+                  autoComplete="off"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
                 />
               </div>
@@ -437,6 +440,7 @@ export default function VehicleForm() {
                   required
                   value={formData.category}
                   onChange={handleInputChange}
+                  autoComplete="off"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
                 >
                   {categories.map(category => (
@@ -507,17 +511,32 @@ export default function VehicleForm() {
 
           {/* Description */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-              Descrição
-            </label>
-            <div className="flex gap-3 mb-3">
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                Descrição
+              </label>
               <button
                 type="button"
                 onClick={generateDescription}
                 disabled={generating}
-                className="px-4 py-2 bg-yellow-400 text-gray-900 font-medium rounded-lg hover:bg-yellow-300 disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {generating ? 'Gerando...' : 'Gerar automaticamente'}
+                {generating ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Gerando...
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Gerar com IA
+                  </>
+                )}
               </button>
             </div>
             <textarea
@@ -526,6 +545,7 @@ export default function VehicleForm() {
               rows={4}
               value={formData.description}
               onChange={handleInputChange}
+              autoComplete="off"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
               placeholder="Descrição detalhada do veículo..."
             />
@@ -545,6 +565,7 @@ export default function VehicleForm() {
                       id={`spec_${field.key}`}
                       value={(formData.specifications as Specifications)[field.key] || ''}
                       onChange={(e) => handleSpecificationChange(field.key, e.target.value)}
+                      autoComplete="off"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
                     >
                       <option value="">Selecione</option>
@@ -558,6 +579,7 @@ export default function VehicleForm() {
                       id={`spec_${field.key}`}
                       value={(formData.specifications as Specifications)[field.key] || ''}
                       onChange={(e) => handleSpecificationChange(field.key, e.target.value)}
+                      autoComplete="off"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
                       placeholder={field.placeholder}
                     />

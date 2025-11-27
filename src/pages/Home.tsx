@@ -96,9 +96,9 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
+      <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         {/* Efeito de luz elegante */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-radial from-blue-500/10 to-transparent rounded-full blur-2xl"></div>
@@ -107,7 +107,7 @@ export default function Home() {
         {/* Padrão de fundo */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE2YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0wIDI0YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00ek0xMiAxNmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHptMCAyNGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40"></div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 pb-32">
           <div className="text-center mb-12">
             <div className="inline-block mb-4">
               <span className="text-sm font-semibold tracking-wider uppercase text-yellow-400/80 bg-yellow-400/10 px-4 py-2 rounded-full border border-yellow-400/20">
@@ -126,23 +126,24 @@ export default function Home() {
           </div>
 
           {/* Busca Única e Dinâmica */}
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto min-h-[80px]">
             <div className="relative">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-gray-400 z-10" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => searchQuery && setShowResults(true)}
-                  placeholder="Digite marca, modelo, categoria... (ex: BMW, 320i, SUV, Diesel)"
+                  onBlur={() => setTimeout(() => setShowResults(false), 200)}
+                  placeholder="Digite marca, modelo, categoria..."
                   className="w-full pl-14 pr-4 py-5 text-lg rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:ring-4 focus:ring-yellow-400/50 focus:outline-none shadow-2xl"
                 />
               </div>
 
               {/* Resultados da Busca */}
               {showResults && searchQuery && (
-                <div className="absolute z-20 w-full mt-2 bg-white rounded-xl shadow-2xl max-h-[500px] overflow-auto">
+                <div className="absolute z-30 w-full mt-2 bg-white rounded-xl shadow-2xl max-h-[400px] overflow-auto">
                   {isSearching ? (
                     <div className="p-8 text-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400 mx-auto"></div>
@@ -164,13 +165,17 @@ export default function Home() {
                           }}
                         >
                           <div className="w-20 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                            <VehicleImage
-                              src={vehicle.images?.[0]?.image_url}
-                              alt={`${vehicle.brand} ${vehicle.model}`}
-                              brand={vehicle.brand}
-                              model={vehicle.model}
-                              className="w-full h-full object-cover"
-                            />
+                            {vehicle.images?.[0]?.image_url ? (
+                              <img
+                                src={vehicle.images[0].image_url}
+                                alt={`${vehicle.brand} ${vehicle.model}`}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                                <Car className="h-8 w-8 text-gray-400" />
+                              </div>
+                            )}
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="text-gray-900 font-semibold truncate">
@@ -212,64 +217,73 @@ export default function Home() {
               )}
             </div>
 
-            {/* Sugestões de Busca */}
-            {!searchQuery && (
-              <div className="mt-6 flex flex-wrap justify-center gap-2">
-                <span className="text-gray-400 text-sm">Sugestões:</span>
-                {['BMW', 'Mercedes-Benz', 'Audi', 'SUV', 'Sedan', 'Diesel'].map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    onClick={() => setSearchQuery(suggestion)}
-                    className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-full transition-colors backdrop-blur"
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-6 rounded-lg bg-card border border-border hover:shadow-md transition-shadow">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-lg mb-4">
-                <Award className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Qualidade Premium</h3>
-              <p className="text-sm text-muted-foreground">
-                Veículos selecionados com rigorosos padrões de qualidade
-              </p>
-            </div>
-
-            <div className="text-center p-6 rounded-lg bg-card border border-border hover:shadow-md transition-shadow">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-lg mb-4">
-                <Shield className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Garantia Estendida</h3>
-              <p className="text-sm text-muted-foreground">
-                Opções de garantia para sua tranquilidade
-              </p>
-            </div>
-
-            <div className="text-center p-6 rounded-lg bg-card border border-border hover:shadow-md transition-shadow">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-lg mb-4">
-                <Clock className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Atendimento Ágil</h3>
-              <p className="text-sm text-muted-foreground">
-                Equipe especializada pronta para atender
-              </p>
+            {/* Sugestões de Busca - Altura fixa para não mudar o banner */}
+            <div className="mt-6 h-10 flex flex-wrap justify-center gap-2">
+              {!searchQuery && (
+                <>
+                  <span className="text-gray-400 text-sm">Sugestões:</span>
+                  {['BMW', 'Mercedes-Benz', 'Audi', 'SUV', 'Sedan', 'Diesel'].map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      onClick={() => setSearchQuery(suggestion)}
+                      className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-full transition-colors backdrop-blur h-10"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </>
+              )}
             </div>
           </div>
         </div>
       </section>
 
       {/* Featured Vehicles Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Por que escolher a Neon?</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Compromisso com excelência em cada detalhe
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="group text-center">
+              <div className="mb-4">
+                <Award className="h-8 w-8 mx-auto text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Qualidade Premium</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Veículos selecionados com rigorosos padrões de qualidade e inspeção completa
+              </p>
+            </div>
+
+            <div className="group text-center">
+              <div className="mb-4">
+                <Shield className="h-8 w-8 mx-auto text-green-600" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Garantia Estendida</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Opções de garantia flexíveis para sua total tranquilidade e segurança
+              </p>
+            </div>
+
+            <div className="group text-center">
+              <div className="mb-4">
+                <Clock className="h-8 w-8 mx-auto text-yellow-600" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Atendimento Ágil</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Equipe especializada pronta para atender com rapidez e eficiência
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -301,7 +315,7 @@ export default function Home() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute top-3 right-3">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-primary text-primary-foreground">
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-black text-white">
                         Destaque
                       </span>
                     </div>

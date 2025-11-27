@@ -43,12 +43,16 @@ export default function Layout() {
               </Link>
             </div>
 
-            {/* Admin Login Button */}
-            <Link to="/admin/login"
-              className="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-900 bg-yellow-400 hover:bg-yellow-300 transition-colors"
+            {/* WhatsApp Button */}
+            <a
+              href="https://wa.me/5511942618407"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
             >
-              Admin
-            </Link>
+              <MessageCircle className="h-4 w-4" />
+              WhatsApp
+            </a>
 
             {/* Mobile menu button */}
             <button
@@ -158,16 +162,17 @@ export default function Layout() {
           </div>
         </div>
       </footer>
-    </div>
-  )
-}
+
+      {/* WhatsApp Floating Button */}
       <a
         href="https://wa.me/5511942618407"
-        className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 px-4 py-3 bg-green-500 text-white font-semibold rounded-full shadow-lg hover:bg-green-600"
+        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all"
         aria-label="WhatsApp"
         target="_blank"
         rel="noopener noreferrer"
       >
-        <MessageCircle className="h-5 w-5" />
-        11 94261-8407
+        <MessageCircle className="h-6 w-6" />
       </a>
+    </div>
+  )
+}
