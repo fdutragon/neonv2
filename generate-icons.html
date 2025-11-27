@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate Icons</title>
+</head>
+<body>
+  <h1>Gerando ícones...</h1>
+  <canvas id="canvas"></canvas>
+  <div id="downloads"></div>
+
+  <script>
+    const sizes = [192, 512];
+    const svg = `
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="neonGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bgGradient)"/>
+  <rect x="80" y="80" width="352" height="352" rx="40" fill="url(#neonGlow)" opacity="0.1" filter="blur(20px)"/>
+  <path d="M 160 140 L 160 372 L 200 372 L 200 220 L 312 372 L 352 372 L 352 140 L 312 140 L 312 292 L 200 140 Z" 
+        fill="url(#neonGlow)" 
+        stroke="url(#neonGlow)" 
+        stroke-width="4"
+        stroke-linejoin="round"/>
+  <path d="M 160 140 L 200 140 L 200 180 L 160 180 Z" fill="white" opacity="0.3"/>
+</svg>`;
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const downloads = document.getElementById('downloads');
+
+    sizes.forEach(size => {
+      canvas.width = size;
+      canvas.height = size;
+
+      const img = new Image();
+      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0, size, size);
+        
+        canvas.toBlob(function(blob) {
+          const link = document.createElement('a');
+          link.download = `icon-${size}x${size}.png`;
+          link.href = URL.createObjectURL(blob);
+          link.textContent = `Download icon-${size}x${size}.png`;
+          link.style.display = 'block';
+          link.style.margin = '10px';
+          downloads.appendChild(link);
+          
+          // Auto download
+          link.click();
+        });
+        
+        URL.revokeObjectURL(url);
+      };
+
+      img.src = url;
+    });
+
+    // Generate favicon
+    canvas.width = 32;
+    canvas.height = 32;
+    const img = new Image();
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+
+    img.onload = function() {
+      ctx.drawImage(img, 0, 0, 32, 32);
+      
+      canvas.toBlob(function(blob) {
+        const link = document.createElement('a');
+        link.download = 'favicon.ico';
+        link.href = URL.createObjectURL(blob);
+        link.textContent = 'Download favicon.ico';
+        link.style.display = 'block';
+        link.style.margin = '10px';
+        downloads.appendChild(link);
+        link.click();
+      });
+      
+      URL.revokeObjectURL(url);
+    };
+
+    img.src = url;
+  </script>
+</body>
+</html>

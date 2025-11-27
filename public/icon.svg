@@ -1,0 +1,19 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Filters -->
+  <defs>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- Background white rounded square -->
+  <rect width="512" height="512" rx="110" fill="white"/>
+  
+  <!-- Subtle border -->
+  <rect width="512" height="512" rx="110" fill="none" stroke="#e5e7eb" stroke-width="2"/>
+  
+  <!-- Letter N in black with shadow -->
+  <path d="M 160 140 L 160 372 L 200 372 L 200 220 L 312 372 L 352 372 L 352 140 L 312 140 L 312 292 L 200 140 Z" 
+        fill="#000000" 
+        filter="url(#shadow)"/>
+</svg>

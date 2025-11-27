@@ -31,9 +31,12 @@ export default function AdminLayout() {
       {/* Sidebar */}
       <div className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white transform transition-transform duration-300 ease-in-out`}>
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-800">
-          <Link to="/admin" className="flex items-center space-x-2">
-            <Car className="h-6 w-6" />
-            <span className="text-lg font-bold">Admin</span>
+          <Link to="/admin" className="flex items-center space-x-3">
+            <img src="/icon.svg" alt="Neon Multimarcas" className="h-10 w-10" />
+            <div className="flex flex-col">
+              <span className="text-sm font-bold leading-tight">Neon</span>
+              <span className="text-xs text-gray-400 leading-tight">Admin</span>
+            </div>
           </Link>
           <button
             onClick={() => setIsSidebarOpen(false)}
