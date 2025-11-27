@@ -11,12 +11,12 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
-      <nav className="bg-yellow-400 shadow-sm border-b">
+      <nav className="bg-gray-900 shadow-lg border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <img src="/logo.webp" alt="Neon Multimarcas" className="h-12 w-auto" />
+              <img src="/logo.png" alt="Neon Multimarcas" className="h-12 w-auto" />
             </Link>
 
             {/* Desktop Navigation */}
@@ -25,8 +25,8 @@ export default function Layout() {
                 to="/"
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   isActive('/') 
-                    ? 'text-blue-900 border-b-2 border-blue-900' 
-                    : 'text-gray-700 hover:text-blue-900'
+                    ? 'text-yellow-400 border-b-2 border-yellow-400' 
+                    : 'text-gray-300 hover:text-yellow-400'
                 }`}
               >
                 Início
@@ -35,8 +35,8 @@ export default function Layout() {
                 to="/search"
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   isActive('/search') 
-                    ? 'text-blue-900 border-b-2 border-blue-900' 
-                    : 'text-gray-700 hover:text-blue-900'
+                    ? 'text-yellow-400 border-b-2 border-yellow-400' 
+                    : 'text-gray-300 hover:text-yellow-400'
                 }`}
               >
                 Buscar Veículos
@@ -45,7 +45,7 @@ export default function Layout() {
 
             {/* Admin Login Button */}
             <Link to="/admin/login"
-              className="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 transition-colors"
+              className="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-900 bg-yellow-400 hover:bg-yellow-300 transition-colors"
             >
               Admin
             </Link>
@@ -53,7 +53,7 @@ export default function Layout() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-700 hover:text-blue-900 hover:bg-gray-100"
+              className="md:hidden p-2 rounded-md text-gray-300 hover:text-yellow-400 hover:bg-gray-800"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -62,14 +62,14 @@ export default function Layout() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-t">
+          <div className="md:hidden bg-gray-800 border-t border-gray-700">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <Link
                 to="/"
                 className={`block px-3 py-2 text-base font-medium rounded-md transition-colors ${
                   isActive('/') 
-                    ? 'text-blue-900 bg-blue-50' 
-                    : 'text-gray-700 hover:text-blue-900 hover:bg-gray-50'
+                    ? 'text-yellow-400 bg-gray-700' 
+                    : 'text-gray-300 hover:text-yellow-400 hover:bg-gray-700'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -79,8 +79,8 @@ export default function Layout() {
                 to="/search"
                 className={`block px-3 py-2 text-base font-medium rounded-md transition-colors ${
                   isActive('/search') 
-                    ? 'text-blue-900 bg-blue-50' 
-                    : 'text-gray-700 hover:text-blue-900 hover:bg-gray-50'
+                    ? 'text-yellow-400 bg-gray-700' 
+                    : 'text-gray-300 hover:text-yellow-400 hover:bg-gray-700'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -88,7 +88,7 @@ export default function Layout() {
               </Link>
               <Link
                 to="/admin/login"
-                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-900 hover:bg-gray-50 rounded-md transition-colors"
+                className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-yellow-400 hover:bg-gray-700 rounded-md transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Área Administrativa

@@ -7,7 +7,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Supabase environment variables are not configured')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storage: window.localStorage,
+    storageKey: 'neon-multimarcas-auth',
+    flowType: 'pkce'
+  }
+})
 
 export interface Specifications {
   engine?: string
@@ -35,7 +44,7 @@ export interface Vehicle {
   mileage: number
   fuel_type: 'gasoline' | 'diesel' | 'electric' | 'flex'
   category: 'sedan' | 'suv' | 'hatchback' | 'pickup' | 'coupe' | 'convertible' | 'wagon'
-  | 'utility'
+  | 'utility' | 'motorcycle'
   featured: boolean
   featured_order: number
   specifications: Specifications

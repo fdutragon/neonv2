@@ -4,6 +4,8 @@ import { supabase, VehicleImage, Specifications } from '@/lib/supabase'
 import { groqChatCompletion } from '@/lib/groq'
 import type { GroqMessage } from '@/lib/groq'
 import { Upload, X } from 'lucide-react'
+import Combobox from '@/components/Combobox'
+import { getCarBrandNames, getMotorcycleBrandNames, getModelsForBrand } from '@/lib/brazilianVehicles'
 
 export default function VehicleForm() {
   const { id } = useParams<{ id: string }>()
@@ -30,6 +32,40 @@ export default function VehicleForm() {
   const [uploading, setUploading] = useState(false)
   const [generating, setGenerating] = useState(false)
 
+  // Get brand options with visual separation
+  const getBrandOptions = (): string[] => {
+    const carBrands = getCarBrandNames()
+    const motorcycleBrands = getMotorcycleBrandNames()
+    
+    // Create a combined list with separators for visual distinction
+    const options: string[] = []
+    
+    // Add car brands with a prefix for grouping
+    carBrands.forEach(brand => options.push(brand))
+    
+    // Add motorcycle brands
+    motorcycleBrands.forEach(brand => options.push(brand))
+    
+    return options
+  }
+
+  // Get model options based on selected brand
+  const getModelOptions = (): string[] => {
+    if (!formData.brand) {
+      return []
+    }
+    return getModelsForBrand(formData.brand)
+  }
+
+  // Handle brand change and clear model field
+  const handleBrandChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      brand: value,
+      model: '' // Clear model when brand changes
+    }))
+  }
+
   // Fuel types and categories from the technical architecture
   const fuelTypes = [
     { value: 'gasoline', label: 'Gasolina' },
@@ -46,7 +82,8 @@ export default function VehicleForm() {
     { value: 'coupe', label: 'Cupê' },
     { value: 'convertible', label: 'Conversível' },
     { value: 'wagon', label: 'Wagon' },
-    { value: 'utility', label: 'Utilitários' }
+    { value: 'utility', label: 'Utilitários' },
+    { value: 'motorcycle', label: 'Moto' }
   ]
 
   // Common specification fields
@@ -134,16 +171,21 @@ export default function VehicleForm() {
         {
           role: 'system',
           content:
-            'Você é um redator automotivo brasileiro. Gere uma descrição comercial concisa (120–180 palavras), clara e atrativa em pt-BR. Evite superlativos excessivos, foque em benefícios e destaque itens relevantes. Inclua pontos sobre desempenho, conforto, tecnologia e segurança quando aplicável.',
+            'Você é um redator automotivo brasileiro especializado em descrições comerciais. IMPORTANTE: Retorne APENAS o texto da descrição, sem introduções como "Segue a descrição", "Aqui está", ou qualquer outro texto adicional. Gere uma descrição comercial concisa (120–180 palavras), clara e atrativa em pt-BR. Evite superlativos excessivos, foque em benefícios e destaque itens relevantes. Inclua pontos sobre desempenho, conforto, tecnologia e segurança quando aplicável. Comece diretamente descrevendo o veículo.',
         },
         {
           role: 'user',
-          content: `Crie uma descrição para: \nMarca: ${formData.brand}\nModelo: ${formData.model}\nAno: ${formData.year}\nPreço: R$ ${formData.price}\nQuilometragem: ${formData.mileage} km\nCombustível: ${formData.fuel_type}\nCategoria: ${formData.category}\nEspecificações: ${JSON.stringify(specs)}\nContexto: loja Neon Multimarcas, estilo premium Perfeito, linguagem objetiva e confiável. Evite repetir números sem necessidade; use frases naturais.`,
+          content: `Crie uma descrição para: \nMarca: ${formData.brand}\nModelo: ${formData.model}\nAno: ${formData.year}\nPreço: R$ ${formData.price}\nQuilometragem: ${formData.mileage} km\nCombustível: ${formData.fuel_type}\nCategoria: ${formData.category}\nEspecificações: ${JSON.stringify(specs)}\nContexto: loja Neon Multimarcas, estilo premium, linguagem objetiva e confiável. Evite repetir números sem necessidade; use frases naturais. LEMBRE-SE: Retorne SOMENTE a descrição do veículo, sem textos introdutórios ou explicações.`,
         },
       ]
       const text = await groqChatCompletion(messages)
       if (text) {
-        setFormData(prev => ({ ...prev, description: text }))
+        // Remove possíveis textos introdutórios que a IA possa ter adicionado
+        const cleanText = text
+          .replace(/^(Segue a descrição|Aqui está|Descrição|Veja|Confira)[:\s]*/i, '')
+          .replace(/^["']|["']$/g, '')
+          .trim()
+        setFormData(prev => ({ ...prev, description: cleanText }))
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
@@ -292,34 +334,27 @@ export default function VehicleForm() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Informações Básicas</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-2">
-                  Marca *
-                </label>
-                <input
-                  type="text"
-                  id="brand"
-                  name="brand"
-                  required
+                <Combobox
+                  label="Marca"
                   value={formData.brand}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                  placeholder="Ex: BMW, Mercedes-Benz, Audi"
+                  onChange={handleBrandChange}
+                  options={getBrandOptions()}
+                  placeholder="Selecione ou digite a marca..."
+                  required={true}
+                  allowCustom={true}
                 />
               </div>
 
               <div>
-                <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-2">
-                  Modelo *
-                </label>
-                <input
-                  type="text"
-                  id="model"
-                  name="model"
-                  required
+                <Combobox
+                  label="Modelo"
                   value={formData.model}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                  placeholder="Ex: X5, C-Class, A4"
+                  onChange={(value) => setFormData(prev => ({ ...prev, model: value }))}
+                  options={getModelOptions()}
+                  placeholder="Selecione ou digite o modelo..."
+                  required={true}
+                  disabled={!formData.brand}
+                  allowCustom={true}
                 />
               </div>
 
@@ -410,36 +445,63 @@ export default function VehicleForm() {
                 </select>
               </div>
 
-              <div className="flex items-center">
-                <label htmlFor="featured" className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="featured"
-                    name="featured"
-                    checked={formData.featured}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 text-blue-900 focus:ring-blue-900 border-gray-300 rounded"
-                  />
-                  <span className="text-sm font-medium text-gray-700">Veículo em Destaque</span>
-                </label>
-              </div>
-
-              {formData.featured && (
-                <div>
-                  <label htmlFor="featured_order" className="block text-sm font-medium text-gray-700 mb-2">
-                    Ordem de Destaque
-                  </label>
-                  <input
-                    type="number"
-                    id="featured_order"
-                    name="featured_order"
-                    min="0"
-                    value={formData.featured_order}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                  />
+              <div className="space-y-4">
+                <div 
+                  onClick={() => setFormData(prev => ({ ...prev, featured: !prev.featured }))}
+                  className={`relative flex items-start p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                    formData.featured 
+                      ? 'border-primary bg-primary/5 shadow-sm' 
+                      : 'border-border hover:border-primary/50 bg-card'
+                  }`}
+                >
+                  <div className="flex items-center h-5">
+                    <input
+                      type="checkbox"
+                      id="featured"
+                      name="featured"
+                      checked={formData.featured}
+                      onChange={() => {}}
+                      className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                    />
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <label htmlFor="featured" className="font-medium text-sm cursor-pointer">
+                      Veículo em Destaque
+                    </label>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Exibir este veículo na página inicial
+                    </p>
+                  </div>
+                  {formData.featured && (
+                    <div className="absolute top-2 right-2">
+                      <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-primary text-primary-foreground">
+                        Ativo
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {formData.featured && (
+                  <div className="pl-4 border-l-2 border-primary/20">
+                    <label htmlFor="featured_order" className="block text-sm font-medium mb-2">
+                      Ordem de Exibição
+                    </label>
+                    <input
+                      type="number"
+                      id="featured_order"
+                      name="featured_order"
+                      min="0"
+                      value={formData.featured_order}
+                      onChange={handleInputChange}
+                      placeholder="0"
+                      className="w-full px-3 py-2 bg-background border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-input"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Menor número aparece primeiro
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

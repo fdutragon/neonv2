@@ -2,20 +2,63 @@
   "name": "Neon Multimarcas",
   "short_name": "Neon",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#ffffff",
   "theme_color": "#1E3A8A",
-  "description": "Catálogo de veículos Perfeito com busca avançada, detalhes e área administrativa.",
+  "description": "Catálogo de veículos com busca avançada, detalhes e área administrativa.",
+  "categories": ["business", "shopping"],
+  "lang": "pt-BR",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/logo.webp",
       "sizes": "192x192",
-      "type": "image/webp"
+      "type": "image/webp",
+      "purpose": "any maskable"
     },
     {
       "src": "/logo.webp",
       "sizes": "512x512",
-      "type": "image/webp"
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/logo.webp",
+      "sizes": "540x720",
+      "type": "image/webp",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Buscar Veículos",
+      "short_name": "Buscar",
+      "description": "Buscar veículos no catálogo",
+      "url": "/search",
+      "icons": [
+        {
+          "src": "/logo.webp",
+          "sizes": "192x192",
+          "type": "image/webp"
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "short_name": "Admin",
+      "description": "Área administrativa",
+      "url": "/admin",
+      "icons": [
+        {
+          "src": "/logo.webp",
+          "sizes": "192x192",
+          "type": "image/webp"
+        }
+      ]
     }
   ]
 }

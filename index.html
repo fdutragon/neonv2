@@ -5,31 +5,26 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Neon Multimarcas</title>
-    <meta name="description" content="Neon Multimarcas — concessionária Perfeito com catálogo de veículos, busca avançada e atendimento personalizado." />
+    <meta name="description" content="Neon Multimarcas — concessionária com catálogo de veículos, busca avançada e atendimento personalizado." />
     <meta name="theme-color" content="#1E3A8A" />
     <meta name="robots" content="index,follow" />
+    
+    <!-- Open Graph -->
     <meta property="og:title" content="Neon Multimarcas" />
-    <meta property="og:description" content="Catálogo de veículos Perfeito com busca avançada, detalhes completos e área administrativa." />
+    <meta property="og:description" content="Catálogo de veículos com busca avançada, detalhes completos e área administrativa." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/logo.webp" />
     <meta property="og:locale" content="pt_BR" />
-    <script type="module">
-      if (import.meta.hot?.on) {
-        import.meta.hot.on('vite:error', (error) => {
-          if (error.err) {
-            console.error(
-              [error.err.message, error.err.frame].filter(Boolean).join('\n'),
-            )
-          }
-        })
-      }
-    </script>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Neon" />
+    <link rel="apple-touch-icon" href="/logo.webp" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="apple-touch-icon" href="/logo.webp" />

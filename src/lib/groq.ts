@@ -19,7 +19,7 @@ export interface GroqChatResponse {
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions'
 
-export async function groqChatCompletion(messages: GroqMessage[], model = 'llama-3.1-70b-versatile'): Promise<string> {
+export async function groqChatCompletion(messages: GroqMessage[], model = 'llama-3.1-8b-instant'): Promise<string> {
   const apiKey = (import.meta.env.GROQ_API_KEY as string) || (import.meta.env.VITE_GROQ_API_KEY as string) || ''
   if (!apiKey) throw new Error('Groq API key não configurada')
 
