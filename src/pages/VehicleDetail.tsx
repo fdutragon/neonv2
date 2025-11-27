@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useAppStore } from '@/stores/appStore'
-import { Car, Calendar, Fuel, Gauge, Package, ChevronLeft, ChevronRight, MessageCircle, Phone, ArrowLeft, Cog } from 'lucide-react'
+import { Car, Calendar, Fuel, Gauge, Package, ChevronLeft, ChevronRight, MessageCircle, Phone, ArrowLeft, Cog, Calculator, X } from 'lucide-react'
 import { VehicleImage } from '@/components/VehicleImage'
 
 export default function VehicleDetail() {
@@ -9,6 +9,13 @@ export default function VehicleDetail() {
   const { selectedVehicle, loading, fetchVehicleById } = useAppStore()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [relatedVehicles, setRelatedVehicles] = useState<any[]>([])
+  const [showSimulationModal, setShowSimulationModal] = useState(false)
+  const [simulationData, setSimulationData] = useState({
+    cpf: '',
+    birthDate: '',
+    hasCNH: 'sim',
+    downPayment: ''
+  })
   
 
   useEffect(() => {
@@ -254,6 +261,14 @@ export default function VehicleDetail() {
               </div>
 
               <div className="border-t pt-6 space-y-3">
+                <button
+                  onClick={() => setShowSimulationModal(true)}
+                  className="flex items-center justify-center w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-lg transition-all shadow-lg shadow-blue-600/30 hover:scale-105"
+                >
+                  <Calculator className="h-5 w-5 mr-2" />
+                  Simular Financiamento
+                </button>
+
                 <a
                   href={whatsappLink(selectedVehicle as any)}
                   target="_blank"
@@ -332,6 +347,158 @@ export default function VehicleDetail() {
       >
         <MessageCircle className="h-6 w-6" />
       </a>
+
+      {/* Modal de Simulação */}
+      {showSimulationModal && selectedVehicle && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-2xl">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold">Simular Financiamento</h3>
+                  <p className="text-sm text-blue-100 mt-1">
+                    {selectedVehicle.brand} {selectedVehicle.model}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowSimulationModal(false)}
+                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Form */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                const message = `🚗 *Simulação de Financiamento*\n\n*Veículo:* ${selectedVehicle.brand} ${selectedVehicle.model} (${selectedVehicle.year})\n*Preço:* ${formatPrice(selectedVehicle.price)}\n\n*Dados do Cliente:*\n📄 CPF: ${simulationData.cpf}\n🎂 Data de Nascimento: ${simulationData.birthDate}\n🪪 Possui CNH: ${simulationData.hasCNH === 'sim' ? 'Sim' : 'Não'}\n💰 Valor de Entrada: R$ ${simulationData.downPayment}\n\nGostaria de fazer uma simulação de financiamento!`
+                window.open(`https://wa.me/5511942618407?text=${encodeURIComponent(message)}`, '_blank')
+                setShowSimulationModal(false)
+              }}
+              className="p-6 space-y-4"
+            >
+              {/* CPF */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  CPF *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={simulationData.cpf}
+                  onChange={(e) => {
+                    let value = e.target.value.replace(/\D/g, '')
+                    if (value.length <= 11) {
+                      value = value.replace(/(\d{3})(\d)/, '$1.$2')
+                      value = value.replace(/(\d{3})(\d)/, '$1.$2')
+                      value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+                      setSimulationData(prev => ({ ...prev, cpf: value }))
+                    }
+                  }}
+                  placeholder="000.000.000-00"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                />
+              </div>
+
+              {/* Data de Nascimento */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Data de Nascimento *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={simulationData.birthDate}
+                  onChange={(e) => {
+                    let value = e.target.value.replace(/\D/g, '')
+                    if (value.length <= 8) {
+                      value = value.replace(/(\d{2})(\d)/, '$1/$2')
+                      value = value.replace(/(\d{2})(\d)/, '$1/$2')
+                      setSimulationData(prev => ({ ...prev, birthDate: value }))
+                    }
+                  }}
+                  placeholder="DD/MM/AAAA"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                />
+              </div>
+
+              {/* CNH */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Possui CNH? *
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 px-4 py-3 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors flex-1">
+                    <input
+                      type="radio"
+                      name="hasCNH"
+                      value="sim"
+                      checked={simulationData.hasCNH === 'sim'}
+                      onChange={(e) => setSimulationData(prev => ({ ...prev, hasCNH: e.target.value }))}
+                      className="text-blue-600"
+                    />
+                    <span className="font-medium">Sim</span>
+                  </label>
+                  <label className="flex items-center gap-2 px-4 py-3 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors flex-1">
+                    <input
+                      type="radio"
+                      name="hasCNH"
+                      value="nao"
+                      checked={simulationData.hasCNH === 'nao'}
+                      onChange={(e) => setSimulationData(prev => ({ ...prev, hasCNH: e.target.value }))}
+                      className="text-blue-600"
+                    />
+                    <span className="font-medium">Não</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Valor de Entrada */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Valor de Entrada *
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">R$</span>
+                  <input
+                    type="text"
+                    required
+                    value={simulationData.downPayment}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '')
+                      const formatted = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(parseInt(value || '0') / 100)
+                      setSimulationData(prev => ({ ...prev, downPayment: formatted }))
+                    }}
+                    placeholder="0,00"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowSimulationModal(false)}
+                  className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-medium rounded-lg transition-all shadow-lg shadow-green-600/30 flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  Enviar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
