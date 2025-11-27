@@ -97,7 +97,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
+      <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         {/* Efeito de luz elegante */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
@@ -144,7 +144,7 @@ export default function Home() {
 
               {/* Resultados da Busca */}
               {showResults && searchQuery && (
-                <div className="absolute z-30 w-full mt-2 bg-white rounded-xl shadow-2xl max-h-[400px] overflow-auto">
+                <div className="absolute z-[60] w-full mt-2 bg-white rounded-xl shadow-2xl max-h-[400px] overflow-auto">
                   {isSearching ? (
                     <div className="p-8 text-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400 mx-auto"></div>

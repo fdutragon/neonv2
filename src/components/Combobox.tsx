@@ -222,7 +222,7 @@ export default function Combobox({
           ref={listRef}
           id={`combobox-list-${label}`}
           role="listbox"
-          className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
+          className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
         >
           {isFiltering ? (
             <li className="px-3 py-2 text-gray-500 text-sm flex items-center gap-2">

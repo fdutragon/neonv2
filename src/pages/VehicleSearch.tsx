@@ -116,7 +116,7 @@ export default function VehicleSearch() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -128,15 +128,15 @@ export default function VehicleSearch() {
         </div>
 
         {/* Search Bar */}
-        <div className="mb-8">
+        <div className="mb-8 relative z-20">
           <div className="relative max-w-3xl">
-            <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Digite marca, modelo, categoria... (ex: BMW, 320i, SUV, Diesel)"
-              className="w-full pl-12 pr-4 py-4 text-lg rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:ring-4 focus:ring-yellow-400/50 focus:outline-none shadow-lg"
+              className="w-full pl-12 pr-4 py-4 text-lg rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:ring-4 focus:ring-yellow-400/50 focus:outline-none shadow-lg relative z-10"
             />
           </div>
         </div>
@@ -148,17 +148,19 @@ export default function VehicleSearch() {
           </div>
 
           <div className="flex items-center gap-4">
-            <select
-              value={sortBy}
-              onChange={(e) => handleSortChange(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
-            >
-              <option value="created_at_desc">Mais Recentes</option>
-              <option value="price_asc">Preço: Menor para Maior</option>
-              <option value="price_desc">Preço: Maior para Menor</option>
-              <option value="year_desc">Ano: Mais Novo</option>
-              <option value="year_asc">Ano: Mais Antigo</option>
-            </select>
+            <div className="relative z-50">
+              <select
+                value={sortBy}
+                onChange={(e) => handleSortChange(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent bg-white"
+              >
+                <option value="created_at_desc">Mais Recentes</option>
+                <option value="price_asc">Preço: Menor para Maior</option>
+                <option value="price_desc">Preço: Maior para Menor</option>
+                <option value="year_desc">Ano: Mais Novo</option>
+                <option value="year_asc">Ano: Mais Antigo</option>
+              </select>
+            </div>
 
             <div className="flex border border-gray-300 rounded-lg overflow-hidden bg-white">
               <button
