@@ -232,35 +232,35 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+      <section className="py-16 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-8 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-shadow">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 text-gray-900 rounded-2xl mb-4 shadow-lg">
-                <Award className="h-8 w-8" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center p-6 rounded-lg bg-card border border-border hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-lg mb-4">
+                <Award className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Qualidade Premium</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold mb-2">Qualidade Premium</h3>
+              <p className="text-sm text-muted-foreground">
                 Veículos selecionados com rigorosos padrões de qualidade
               </p>
             </div>
 
-            <div className="text-center p-8 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-shadow">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 text-gray-900 rounded-2xl mb-4 shadow-lg">
-                <Shield className="h-8 w-8" />
+            <div className="text-center p-6 rounded-lg bg-card border border-border hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-lg mb-4">
+                <Shield className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Garantia Estendida</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold mb-2">Garantia Estendida</h3>
+              <p className="text-sm text-muted-foreground">
                 Opções de garantia para sua tranquilidade
               </p>
             </div>
 
-            <div className="text-center p-8 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-shadow">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 text-gray-900 rounded-2xl mb-4 shadow-lg">
-                <Clock className="h-8 w-8" />
+            <div className="text-center p-6 rounded-lg bg-card border border-border hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 text-primary rounded-lg mb-4">
+                <Clock className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Atendimento Ágil</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold mb-2">Atendimento Ágil</h3>
+              <p className="text-sm text-muted-foreground">
                 Equipe especializada pronta para atender
               </p>
             </div>
