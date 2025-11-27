@@ -128,15 +128,15 @@ export default function VehicleSearch() {
         </div>
 
         {/* Search Bar */}
-        <div className="mb-8 relative z-20">
+        <div className="mb-8 relative">
           <div className="relative max-w-3xl">
-            <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+            <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Digite marca, modelo, categoria... (ex: BMW, 320i, SUV, Diesel)"
-              className="w-full pl-12 pr-4 py-4 text-lg rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:ring-4 focus:ring-yellow-400/50 focus:outline-none shadow-lg relative z-10"
+              className="w-full pl-12 pr-4 py-4 text-lg rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:ring-4 focus:ring-yellow-400/50 focus:outline-none shadow-lg"
             />
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function VehicleSearch() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="relative z-50">
+            <div className="relative">
               <select
                 value={sortBy}
                 onChange={(e) => handleSortChange(e.target.value)}
@@ -192,9 +192,9 @@ export default function VehicleSearch() {
                   <Link
                     key={vehicle.id}
                     to={`/vehicle/${vehicle.id}`}
-                    className="group bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-all"
+                    className="group bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-all block"
                   >
-                    <div className="relative aspect-video bg-muted overflow-hidden">
+                    <div className="relative aspect-video bg-muted overflow-hidden pointer-events-none">
                       <VehicleImage
                         src={vehicle.images?.[0]?.image_url}
                         alt={`${vehicle.brand} ${vehicle.model}`}
@@ -211,7 +211,7 @@ export default function VehicleSearch() {
                       )}
                     </div>
                     
-                    <div className="p-5">
+                    <div className="p-5 pointer-events-none">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <p className="text-xs text-muted-foreground mb-1">{vehicle.year}</p>
@@ -257,7 +257,7 @@ export default function VehicleSearch() {
                     to={`/vehicle/${vehicle.id}`}
                     className="group block bg-card rounded-lg border border-border p-5 hover:shadow-lg transition-all"
                   >
-                    <div className="flex flex-col sm:flex-row gap-5">
+                    <div className="flex flex-col sm:flex-row gap-5 pointer-events-none">
                       <div className="sm:w-48 h-32 bg-muted rounded-lg flex-shrink-0 overflow-hidden">
                         <VehicleImage
                           src={vehicle.images?.[0]?.image_url}
