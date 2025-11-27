@@ -19,7 +19,7 @@ export default defineConfig({
     tsconfigPaths(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'logo.webp'],
+      includeAssets: ['favicon.svg', 'icon.svg', 'logo.png'],
       manifest: {
         name: 'Neon Multimarcas',
         short_name: 'Neon',
@@ -30,15 +30,15 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: '/logo.webp',
+            src: '/icon.svg',
             sizes: '192x192',
-            type: 'image/webp',
+            type: 'image/svg+xml',
             purpose: 'any maskable'
           },
           {
-            src: '/logo.webp',
+            src: '/icon.svg',
             sizes: '512x512',
-            type: 'image/webp',
+            type: 'image/svg+xml',
             purpose: 'any maskable'
           }
         ]

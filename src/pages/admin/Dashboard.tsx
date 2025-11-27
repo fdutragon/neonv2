@@ -5,7 +5,7 @@ import { supabase, ContactInterest } from '@/lib/supabase'
 import { Car, Users, Star, Eye, Plus, TrendingUp, Calendar, DollarSign } from 'lucide-react'
 
 export default function AdminDashboard() {
-  const { featuredVehicles } = useAppStore()
+  const { featuredVehicles, fetchFeaturedVehicles } = useAppStore()
   const [metrics, setMetrics] = useState({
     totalVehicles: 0,
     featuredVehicles: 0,
@@ -18,7 +18,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchMetrics()
     fetchRecentContacts()
-  }, [])
+    fetchFeaturedVehicles()
+  }, [fetchFeaturedVehicles])
 
   const fetchMetrics = async () => {
     try {

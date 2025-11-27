@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase, VehicleImage, Specifications } from '@/lib/supabase'
 import { groqChatCompletion } from '@/lib/groq'
 import type { GroqMessage } from '@/lib/groq'
-import { Upload, X } from 'lucide-react'
+import { Upload, X, Sparkles } from 'lucide-react'
 import Combobox from '@/components/Combobox'
 import { getCarBrandNames, getMotorcycleBrandNames, getModelsForBrand } from '@/lib/brazilianVehicles'
 
@@ -328,7 +328,7 @@ export default function VehicleForm() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6" autoComplete="off">
           {/* Basic Information */}
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Informações Básicas</h2>
@@ -380,18 +380,24 @@ export default function VehicleForm() {
                 <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
                   Preço (R$) *
                 </label>
-                <input
-                  type="number"
-                  id="price"
-                  name="price"
-                  required
-                  min="0"
-                  step="1000"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  autoComplete="off"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">R$</span>
+                  <input
+                    type="text"
+                    id="price"
+                    name="price"
+                    required
+                    value={formData.price ? new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(formData.price) : ''}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '')
+                      const numValue = parseInt(value || '0') / 100
+                      setFormData(prev => ({ ...prev, price: numValue }))
+                    }}
+                    placeholder="0,00"
+                    autoComplete="off"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-transparent"
+                  />
+                </div>
               </div>
 
               <div>
@@ -519,7 +525,7 @@ export default function VehicleForm() {
                 type="button"
                 onClick={generateDescription}
                 disabled={generating}
-                className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-sm font-medium rounded-md shadow-lg shadow-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105"
               >
                 {generating ? (
                   <>
@@ -527,13 +533,11 @@ export default function VehicleForm() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Gerando...
+                    Gerando mágica...
                   </>
                 ) : (
                   <>
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
+                    <Sparkles className="h-4 w-4 animate-pulse" />
                     Gerar com IA
                   </>
                 )}

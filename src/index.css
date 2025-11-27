@@ -12,3 +12,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Remove scroll do body apenas no admin para evitar scrollbar dupla */
+body.admin-layout {
+  overflow: hidden;
+}
+
+body.admin-layout #root {
+  height: 100vh;
+  overflow: hidden;
+}
