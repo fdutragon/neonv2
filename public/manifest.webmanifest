@@ -4,7 +4,7 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "background_color": "#ffffff",
   "theme_color": "#1E3A8A",
   "description": "Catálogo de veículos com busca avançada, detalhes e área administrativa.",
