@@ -218,21 +218,30 @@ export default function Home() {
               )}
             </div>
 
-            {/* Sugestões de Busca - Altura fixa para não mudar o banner */}
-            <div className="mt-6 h-10 flex flex-wrap justify-center gap-2">
+            {/* Sugestões de Busca */}
+            <div className="mt-6">
               {!searchQuery && (
-                <>
-                  <span className="text-gray-400 text-sm">Sugestões:</span>
-                  {['BMW', 'Mercedes-Benz', 'Audi', 'SUV', 'Sedan', 'Diesel'].map((suggestion) => (
+                <div className="flex flex-wrap justify-center gap-2">
+                  {[
+                    { label: 'BMW', value: 'BMW' },
+                    { label: 'Mercedes-Benz', value: 'Mercedes-Benz' },
+                    { label: 'Audi', value: 'Audi' },
+                    { label: 'SUV', value: 'SUV' },
+                    { label: 'Sedan', value: 'Sedan' },
+                    { label: 'Elétrico', value: 'electric' },
+                    { label: 'Flex', value: 'flex' },
+                    { label: 'Moto', value: 'motorcycle' },
+                    { label: 'Pick-up', value: 'pickup' }
+                  ].map((suggestion) => (
                     <button
-                      key={suggestion}
-                      onClick={() => setSearchQuery(suggestion)}
-                      className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-full transition-colors backdrop-blur h-10"
+                      key={suggestion.value}
+                      onClick={() => setSearchQuery(suggestion.value)}
+                      className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-lg border border-white/20 hover:border-white/40 backdrop-blur-sm transition-all duration-200 hover:scale-105"
                     >
-                      {suggestion}
+                      {suggestion.label}
                     </button>
                   ))}
-                </>
+                </div>
               )}
             </div>
           </div>
