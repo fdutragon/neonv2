@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
-import Home from "@/pages/Home";
 import Maintenance from "@/pages/Maintenance";
+import VehicleSearch from "@/pages/VehicleSearch";
 import VehicleDetail from "@/pages/VehicleDetail";
 import AdminLogin from "@/pages/admin/Login";
 import AdminDashboard from "@/pages/admin/Dashboard";
@@ -47,8 +47,8 @@ export default function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="search" element={<Maintenance />} />
+            <Route index element={<Maintenance />} />
+            <Route path="search" element={<VehicleSearch />} />
             <Route path="vehicle/:id" element={<VehicleDetail />} />
           </Route>
           
